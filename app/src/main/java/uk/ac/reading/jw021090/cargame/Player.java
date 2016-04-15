@@ -78,6 +78,8 @@ public class Player extends Object{
         if (xPos < 24){
             xPos = 24;
         }
+
+        System.out.println(xPos);
     }
     
 }

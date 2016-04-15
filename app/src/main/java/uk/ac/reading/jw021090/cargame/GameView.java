@@ -3,6 +3,10 @@ package uk.ac.reading.jw021090.cargame;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -13,25 +17,24 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int WIDTH = 216;
 	public static final int HEIGHT = 384;
 	public static final int SCREENSPEED = 3;
 	private long smokeTimer;
+	private long carsTimer;
 	private volatile GameThread thread;
 	private Background background;
 	private Player player;
 	private ArrayList<Smoke> smoke;
-
-	//private SensorEventListener sensorAccelerometer;
+	private Bullet bullet;
+	private ArrayList<Car> cars;
+	private Random rnd = new Random();
 
 	//Handle communication from the GameThread to the View/Activity Thread
 	private Handler mHandler;
-
-	//Pointers to the views
-	private TextView mScoreView;
-	private TextView mStatusView;
 
 
 	public GameView(Context context, AttributeSet attrs) {
@@ -95,9 +98,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
 			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.car1), 32, 57);
 			smoke = new ArrayList<Smoke>();
+			bullet = new Bullet();
+			cars = new ArrayList<Car>();
 
 			smokeTimer = System.nanoTime();
-
+			carsTimer = System.nanoTime();
 
 			thread.setRunning(true);
 
@@ -163,10 +168,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			canvas.scale(scaleX, scaleY);
 			background.draw(canvas);
 			player.draw(canvas);
+			bullet.draw(canvas);
 
 			for(Smoke sm: smoke){
 				sm.draw(canvas);
 			}
+
+			for (Car c: cars){
+				c.draw(canvas);
+			}
+
 
 			canvas.restoreToCount(saved);
 		}
@@ -183,11 +194,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			//else depending on where the finger is will be left or right
 
 			//left
-			else if(event.getX() < getWidth()/2){
-				player.setLeft(true);
+			else if(event.getY() > getHeight() - getHeight()/ 8) {
+				if (event.getX() < getWidth() / 2) {
+					player.setLeft(true);
+				} else if (event.getX() >= getWidth() / 2) {
+					player.setRight(true);
+				}
 			}
-			else if(event.getX() >= getWidth()/2){
-				player.setRight(true);
+			else if(event.getY() < getHeight() - getHeight()/ 8) {
+				// Shots fired
+				if(bullet.shoot(player.getxPos()+ player.width/2,player.getyPos(),bullet.UP)){
+					//soundPool.play(shootID, 1, 1, 0, 0, 1);
+				}
 			}
 			System.out.println(event.getX() + "   " + event.getY());
 
@@ -206,14 +224,83 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	}
 
+	public boolean collision(Object a, Object b){
+		if (Rect.intersects(a.getRectangle(), b.getRectangle())){
+			return true;
+		}
+		return false;
+	}
+
 	public void update(){
 		if (player.isPlaying()) {
 			player.update();
 			background.update();
+			// Update the players bullet
+			if(bullet.getStatus()){
+				bullet.update(GameThread.FPS);
+			}
+			// Has the player's bullet hit the top of the screen
+			if(bullet.getImpactPointY() < 0){
+				bullet.setInactive();
+			}
+
+			// bullets colliding:
+			/*
+			if (RectF.intersects(bullet.getRect(), invaders[i].getRect())) {
+				invaders[i].setInvisible();
+				soundPool.play(invaderExplodeID, 1, 1, 0, 0, 1);
+				bullet.setInactive();
+				score = score + 10;
+			}
+			*/
 
 			// create Smoke every so often
-			long elapsed = (System.nanoTime() - smokeTimer)/1000000;
-			if(elapsed > 150){
+			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
+			if (elapsedCars > (2000 - player.getScore()/4)){
+				cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2), 32, 56, player.getScore()));
+				// reser timer
+				carsTimer = System.nanoTime();
+			}
+
+			//loop through every car and check collision and remove
+			for(int i = 0; i < cars.size();i++) {
+				//update missile
+				cars.get(i).update();
+
+				// if cars collide with player
+				if(collision(cars.get(i),player)){
+					cars.remove(i);
+					player.setPlaying(false);
+					break;
+				}
+
+				// if two cars collide, set the same speed in order not to go on top of each other
+				for(int j = 0; j < cars.size(); j++) {
+					if (i != j) {
+						if (collision(cars.get(i), cars.get(j))) {
+							if (cars.get(i).getSpeed() > cars.get(j).getSpeed()){
+								cars.get(i).setyPos(cars.get(i).getyPos()-cars.get(i).getSpeed()*2);
+								cars.get(i).setSpeed(cars.get(j).getSpeed());
+							}
+							else {
+								cars.get(j).setyPos(cars.get(j).getyPos()-cars.get(j).getSpeed()*2);
+								cars.get(j).setSpeed(cars.get(i).getSpeed());
+							}
+						}
+					}
+				}
+
+				//remove car if it is way off the screen
+				if(cars.get(i).getxPos()<-100)
+				{
+					cars.remove(i);
+					break;
+				}
+			}
+
+			// add smoke on timer
+			long elapsedSmoke = (System.nanoTime() - smokeTimer)/1000000;
+			if(elapsedSmoke > 150){
 				smoke.add(new Smoke(player.getxPos()+player.width/2-5, player.getyPos()+player.height));
 				smokeTimer = System.nanoTime();
 			}

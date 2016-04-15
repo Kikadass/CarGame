@@ -2,6 +2,7 @@ package uk.ac.reading.jw021090.cargame;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 
 import java.util.Random;
 
@@ -12,47 +13,64 @@ import uk.ac.reading.jw021090.cargame.R;
  */
 
 
-public class Car {
-    //Will store the image of a ball
+public class Car extends Object{
+    //Will store the image of a car
     private Bitmap image;
+    private int score;
+    private int speed;
+    private Random rnd = new Random();
 
-    //The X and Y position of the ball on the screen (middle of ball)
-    private float xPos = 0;
-    private float yPos = 0;
 
-    public Car(GameView mGameView){
-        //Prepare the image so we can draw it on the screen (using a canvas)
-        this.image = BitmapFactory.decodeResource (mGameView.getContext().getResources(), R.drawable.car1);
-        Random rnd = new Random();
+    public Car(Bitmap res, int w, int h, int score){
+        int random = rnd.nextInt(4);
+        System.out.println(random);
+        switch (random){
+            case 0:
+                xPos = 32;
+                break;
+            case 1:
+                xPos = 72;
+                break;
+            case 2:
+                xPos = 112;
+                break;
+            case 3:
+                xPos = 152;
+                break;
+        }
+        super.yPos = -h;
+        width = w;
+        height = h;
+        this.score = score;
 
+        this.speed = 2 +(int) (rnd.nextDouble()*score/30);
+
+        // cap missile speed
+
+        if (this.speed > 20) this.speed = 20;
+
+        this.image = res;
 
     }
 
-    public float getX() {
-        return xPos;
+    public int getWidth(){
+        return width;
     }
 
-    public float getY() {
-        return yPos;
+    public int getSpeed() {
+        return speed;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void draw(Canvas canvas){
+        canvas.drawBitmap(image,xPos,yPos,null);
     }
 
-    public void setY(float yPos) {
-        this.yPos = yPos;
-    }
-
-    public void setX(float xPos) {
-        this.xPos = xPos;
-    }
-
-    public void update(GameView mGameView){
+    public void update(){
+        yPos += speed;
 
     }
 

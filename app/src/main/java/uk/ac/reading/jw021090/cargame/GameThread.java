@@ -20,7 +20,7 @@ public class GameThread extends Thread {
 	public static final int STATE_READY = 3;
 	public static final int STATE_RUNNING = 4;
 	public static final int STATE_WIN = 5;
-	private int FPS = 30;
+	public static int FPS = 30;
 	private double averageFPS;
 	protected int mMode = 1;				//Control variable for the mode of the game (e.g. STATE_WIN)
 	private boolean running = false;
