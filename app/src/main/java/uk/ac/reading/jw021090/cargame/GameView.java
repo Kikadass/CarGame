@@ -12,11 +12,17 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-	public static final int WIDTH = 648;
-	public static final int HEIGHT = 1152;
+	public static final int WIDTH = 216;
+	public static final int HEIGHT = 384;
+	public static final int SCREENSPEED = 3;
+	private long smokeTimer;
 	private volatile GameThread thread;
 	private Background background;
+	private Player player;
+	private ArrayList<Smoke> smoke;
 
 	//private SensorEventListener sensorAccelerometer;
 
@@ -87,7 +93,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		if(thread!=null) {
 			background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-			background.setDy(5);
+			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.car1), 32, 57);
+			smoke = new ArrayList<Smoke>();
+
+			smokeTimer = System.nanoTime();
 
 
 			thread.setRunning(true);
@@ -124,9 +133,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		if(thread!=null) {
 			thread.setRunning(false);
 		}
-		
+
+		int counter = 0;
+
 		//join the thread with this thread
-		while (retry) {
+		while (retry && counter < 1000) {
 			try {
 				thread.setRunning(false);
 				if(thread!=null) {
@@ -137,24 +148,84 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			counter++;
 		}
 	}
 
 	@Override
 	public  void draw(Canvas canvas){
 		super.draw(canvas);
-		final float scaleX = getWidth()/((float)WIDTH);
+		final float scaleX = getWidth()/(float)WIDTH;
 		final float scaleY = getHeight()/(float)HEIGHT;
+
 		if(canvas!=null) {
 			final int saved = canvas.save();
 			canvas.scale(scaleX, scaleY);
 			background.draw(canvas);
+			player.draw(canvas);
+
+			for(Smoke sm: smoke){
+				sm.draw(canvas);
+			}
+
 			canvas.restoreToCount(saved);
 		}
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event){
+		// if player touches the screen
+		if(event.getAction() == MotionEvent.ACTION_DOWN){
+			// if he was not playing--> start playing
+			if(!player.isPlaying()){
+				player.setPlaying(true);
+			}
+			//else depending on where the finger is will be left or right
+
+			//left
+			else if(event.getX() < getWidth()/2){
+				player.setLeft(true);
+			}
+			else if(event.getX() >= getWidth()/2){
+				player.setRight(true);
+			}
+			System.out.println(event.getX() + "   " + event.getY());
+
+		}
+
+
+
+		// if player stops touching the screen stop turning
+		if(event.getAction() == MotionEvent.ACTION_UP){
+			player.setLeft(false);
+			player.setRight(false);
+			return true;
+		}
+
+		return true;
+
+	}
+
 	public void update(){
-		background.update();
+		if (player.isPlaying()) {
+			player.update();
+			background.update();
+
+			// create Smoke every so often
+			long elapsed = (System.nanoTime() - smokeTimer)/1000000;
+			if(elapsed > 150){
+				smoke.add(new Smoke(player.getxPos()+player.width/2-5, player.getyPos()+player.height));
+				smokeTimer = System.nanoTime();
+			}
+
+			for(int i = 0; i < smoke.size(); i++){
+				smoke.get(i).update();
+
+				if(smoke.get(i).getyPos() > GameView.HEIGHT){
+					smoke.remove(i);
+				}
+			}
+		}
 	}
 }
 

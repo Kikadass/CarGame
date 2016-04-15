@@ -18,6 +18,7 @@ public class Background {
 
     public Background(Bitmap image){
         this.image = image;
+        this.dy = GameView.SCREENSPEED;
     }
 
     public void draw(Canvas canvas){
@@ -29,9 +30,6 @@ public class Background {
     }
 
 
-    public void setDy(int dy){
-        this.dy = dy;
-    }
 
     public void update(){
         yPos += dy;
