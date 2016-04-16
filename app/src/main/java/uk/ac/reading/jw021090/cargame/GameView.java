@@ -6,15 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,6 +22,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int SCREENSPEED = 3;
 	private long smokeTimer;
 	private long carsTimer;
+	private long startReset = 0;
 	private volatile GameThread thread;
 	private Background background;
 	private Player player;
@@ -32,6 +30,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private Bullet bullet;
 	private ArrayList<Car> cars;
 	private Random rnd = new Random();
+	private boolean newGame = false;
+	private Explosion playerExplosion;
+	private boolean dead = false;
+	private int best = 0;
 
 	//Handle communication from the GameThread to the View/Activity Thread
 	private Handler mHandler;
@@ -48,6 +50,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 		setFocusable(true);
+	}
+
+	public void startGame(){
+		// updating best score
+		if (player.getScore() > best){
+			best = player.getScore();
+		}
+
+		smoke.clear();
+		cars.clear();
+		player.resetScore();
+		player.setxPos(112);
+		player.resetDx();
+		player.setVisible(true);
+		bullet.setInactive();
+
+		newGame = true;
 	}
 
 	//Used to release any resources.
@@ -149,6 +168,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					thread.join();
 				}
 				retry = false;
+				thread = null;
 			} 
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -167,7 +187,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			final int saved = canvas.save();
 			canvas.scale(scaleX, scaleY);
 			background.draw(canvas);
-			player.draw(canvas);
+
 			bullet.draw(canvas);
 
 			for(Smoke sm: smoke){
@@ -178,8 +198,37 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				c.draw(canvas);
 			}
 
+			if (player.isVisible()) {
+				player.draw(canvas);
+			}
+
+			if(!player.isVisible()){
+				playerExplosion.draw(canvas);
+			}
+
+			drawMessage(canvas);
 
 			canvas.restoreToCount(saved);
+		}
+	}
+
+	public void drawMessage(Canvas canvas){
+		Paint paint = new Paint();
+		paint.setColor(Color.RED);
+		paint.setTextSize(20);
+		paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+		canvas.drawText("DISTANCE: " + (player.getScore()), 30, 20, paint);
+
+		if (!player.isPlaying()) {
+			canvas.drawText("BEST: " + best, WIDTH / 7, HEIGHT / 2 - 30, paint);
+		}
+
+		if(!player.isPlaying() && dead) {
+			Paint paint1 = new Paint();
+			paint1.setColor(Color.RED);
+			paint1.setTextSize(20);
+			paint1.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+			canvas.drawText("PRESS TO START", WIDTH / 7, HEIGHT / 2, paint1);
 		}
 	}
 
@@ -188,20 +237,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		// if player touches the screen
 		if(event.getAction() == MotionEvent.ACTION_DOWN){
 			// if he was not playing--> start playing
-			if(!player.isPlaying()){
+			if(!player.isPlaying() && newGame){
 				player.setPlaying(true);
+				dead = false;
 			}
 			//else depending on where the finger is will be left or right
 
 			//left
-			else if(event.getY() > getHeight() - getHeight()/ 8) {
+			else if(event.getY() > getHeight() - getHeight()/ 7) {
 				if (event.getX() < getWidth() / 2) {
 					player.setLeft(true);
 				} else if (event.getX() >= getWidth() / 2) {
 					player.setRight(true);
 				}
 			}
-			else if(event.getY() < getHeight() - getHeight()/ 8) {
+			else if(event.getY() < getHeight() - getHeight()/ 7) {
 				// Shots fired
 				if(bullet.shoot(player.getxPos()+ player.width/2,player.getyPos(),bullet.UP)){
 					//soundPool.play(shootID, 1, 1, 0, 0, 1);
@@ -254,23 +304,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 			*/
 
-			// create Smoke every so often
+			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
 			if (elapsedCars > (2000 - player.getScore()/4)){
-				cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2), 32, 56, player.getScore()));
-				// reser timer
+				int random = rnd.nextInt(3);
+				switch (random){
+					case 0:
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2), 32, 60, player.getScore()));
+						break;
+					case 1:
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car3), 34, 60, player.getScore()));
+						break;
+					case 2:
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.police_car), 32, 60, player.getScore()));
+						break;
+				}
+				// reset timer
 				carsTimer = System.nanoTime();
 			}
 
 			//loop through every car and check collision and remove
 			for(int i = 0; i < cars.size();i++) {
-				//update missile
+				//update cars
 				cars.get(i).update();
 
-				// if cars collide with player
+				// if cars collide with player pause game and restart it
 				if(collision(cars.get(i),player)){
 					cars.remove(i);
 					player.setPlaying(false);
+					player.setVisible(false);
+					newGame = false;
+					startReset = System.nanoTime();
+					playerExplosion = new Explosion(BitmapFactory.decodeResource(getResources(),R.drawable.explosion), player.getxPos(), player.getyPos(), 32, 32, 16);
+
 					break;
 				}
 
@@ -291,8 +357,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 
 				//remove car if it is way off the screen
-				if(cars.get(i).getxPos()<-100)
-				{
+				if(cars.get(i).getxPos()<-100){
 					cars.remove(i);
 					break;
 				}
@@ -311,6 +376,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				if(smoke.get(i).getyPos() > GameView.HEIGHT){
 					smoke.remove(i);
 				}
+			}
+		}
+
+		else {
+
+			//player exploded
+			if (playerExplosion != null){
+				playerExplosion.update();
+				long elapsedExplosion = (System.nanoTime() - startReset)/1000000;
+				if (elapsedExplosion > 2000 && !newGame) {
+					startGame();
+					dead = true;
+					playerExplosion = null;
+				}
+			}
+			else if(!newGame) {
+				startGame();
 			}
 		}
 	}

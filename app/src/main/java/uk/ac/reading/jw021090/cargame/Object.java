@@ -13,6 +13,8 @@ public abstract class Object {
     protected float dx;
     protected int height;
     protected int width;
+    protected boolean visible = true;
+
 
     public int getxPos() {
         return xPos;
@@ -22,6 +24,12 @@ public abstract class Object {
         return yPos;
     }
 
+    public Rect getRectangle(){
+        return new Rect(xPos,yPos, xPos+width, yPos+height);
+    }
+
+    public boolean isVisible(){return visible;}
+
     public void setyPos(int yPos) {
         this.yPos = yPos;
     }
@@ -30,8 +38,8 @@ public abstract class Object {
         this.xPos = xPos;
     }
 
-    public Rect getRectangle(){
-        return new Rect(xPos,yPos, xPos+width, yPos+height);
+    public void setVisible(boolean b){
+        visible = b;
     }
 
 }

@@ -23,7 +23,6 @@ public class Car extends Object{
 
     public Car(Bitmap res, int w, int h, int score){
         int random = rnd.nextInt(4);
-        System.out.println(random);
         switch (random){
             case 0:
                 xPos = 32;
@@ -47,7 +46,7 @@ public class Car extends Object{
 
         // cap missile speed
 
-        if (this.speed > 20) this.speed = 20;
+        if (this.speed > 15) this.speed = 15;
 
         this.image = res;
 
