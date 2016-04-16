@@ -22,16 +22,17 @@ public class Car extends Object{
 
 
     public Car(Bitmap res, int w, int h, int score){
-        int random = rnd.nextInt(4);
+        int random = rnd.nextInt(4 - GameView.gameState);
+        if (GameView.changingState && random != 0)random--;
         switch (random){
             case 0:
-                xPos = 32;
+                xPos = 112;
                 break;
             case 1:
                 xPos = 72;
                 break;
             case 2:
-                xPos = 112;
+                xPos = 32;
                 break;
             case 3:
                 xPos = 152;
@@ -42,11 +43,11 @@ public class Car extends Object{
         height = h;
         this.score = score;
 
-        this.speed = 2 +(int) (rnd.nextDouble()*score/30);
+        this.speed = 3 +(int) (rnd.nextDouble()*score/50);
 
         // cap missile speed
 
-        if (this.speed > 15) this.speed = 15;
+        if (this.speed > 10) this.speed = 10;
 
         this.image = res;
 

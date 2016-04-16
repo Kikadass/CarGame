@@ -31,10 +31,6 @@ public class GameThread extends Thread {
 	protected int canvasWidth = 1;			//We might want to extend this call - therefore protected
 	protected int canvasHeight = 1;
 	protected long mLastTime = 0;			//Last time we updated the game physics
-	// Images
-	protected Bitmap backgroundImage;
-	protected Bitmap roadImage;
-	protected long score = 0;
 	static final Integer monitor = 1;		//Used to ensure appropriate threading
 
 
@@ -67,8 +63,6 @@ public class GameThread extends Thread {
 			mLastTime = System.currentTimeMillis() + 100;
 
 			setState(STATE_RUNNING);
-			
-			setScore(0);
 		}
 	}
 	
@@ -102,7 +96,7 @@ public class GameThread extends Thread {
 				}
 			}
 
-			// to controll the FPS
+			// to control the FPS
 			timeMillis = (System.nanoTime() - startTime) / 1000000;
 			waitTime = targetTime-timeMillis;
 
@@ -113,8 +107,7 @@ public class GameThread extends Thread {
 
 			totalTime += System.nanoTime()-startTime;
 			frameCount++;
-			if(frameCount == FPS)
-			{
+			if(frameCount == FPS){
 				averageFPS = 1000/((totalTime/frameCount)/1000000);
 				frameCount =0;
 				totalTime = 0;
@@ -207,28 +200,6 @@ public class GameThread extends Thread {
 		return mMode;
 	}
 
-
-	/* ALL ABOUT SCORES */
-	
-	//Send a score to the View to view 
-	//Would it be better to do this inside this thread writing it manually on the screen?
-	public void setScore(long score) {
-		this.score = score;
-		
-		synchronized (monitor) {
-			Message msg = mHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putBoolean("score", true);
-			b.putString("text", getScoreString().toString());
-			msg.setData(b);
-			mHandler.sendMessage(msg);
-		}
-	}
-	
-	protected CharSequence getScoreString() {
-		return Long.toString(Math.round(this.score));
-	}
-	
 }
 
 // This file is part of the course "Begin Programming: Build your first mobile game" from futurelearn.com

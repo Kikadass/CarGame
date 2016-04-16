@@ -20,6 +20,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int WIDTH = 216;
 	public static final int HEIGHT = 384;
 	public static final int SCREENSPEED = 3;
+	public static int gameState = 0;
+	public static boolean changingState = false;
 	private long smokeTimer;
 	private long carsTimer;
 	private long startReset = 0;
@@ -54,10 +56,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void startGame(){
 		// updating best score
-		if (player.getScore() > best){
-			best = player.getScore();
-		}
-
+		gameState = 0;
+		changingState = false;
 		smoke.clear();
 		cars.clear();
 		player.resetScore();
@@ -65,6 +65,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.resetDx();
 		player.setVisible(true);
 		bullet.setInactive();
+		background.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+
 
 		newGame = true;
 	}
@@ -186,7 +188,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		if(canvas!=null) {
 			final int saved = canvas.save();
 			canvas.scale(scaleX, scaleY);
+
+			if (player.getScore() > 20 && gameState == 0){
+				if (!background.isChanged()) {
+					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background3));
+					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto3));
+					changingState = true;
+				}
+				else{
+					changingState = false;
+					gameState = 1;
+				}
+			}
 			background.draw(canvas);
+
 
 			bullet.draw(canvas);
 
@@ -220,6 +235,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		canvas.drawText("DISTANCE: " + (player.getScore()), 30, 20, paint);
 
 		if (!player.isPlaying()) {
+			if (player.getScore() > best){
+				best = player.getScore();
+			}
 			canvas.drawText("BEST: " + best, WIDTH / 7, HEIGHT / 2 - 30, paint);
 		}
 
@@ -318,6 +336,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					case 2:
 						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.police_car), 32, 60, player.getScore()));
 						break;
+					default:
+						break;
 				}
 				// reset timer
 				carsTimer = System.nanoTime();
@@ -395,6 +415,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				startGame();
 			}
 		}
+
 	}
 }
 
