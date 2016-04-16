@@ -42,6 +42,11 @@ public class Background {
         return changed;
     }
 
+    public void resetChanging(){
+        changing = false;
+        changed = false;
+    }
+
     public void draw(Canvas canvas){
         if (changed) {
             canvas.drawBitmap(tempImage, xPos, yPos, null);
@@ -49,7 +54,6 @@ public class Background {
         else canvas.drawBitmap(image, xPos, yPos, null);
 
         if(yPos < GameView.HEIGHT){
-            System.out.println("changed: " + changed + " Gameview " + GameView.changingState);
             if (changing) {
                 canvas.drawBitmap(tempImage, xPos, yPos - GameView.HEIGHT, null);
             }
@@ -57,12 +61,9 @@ public class Background {
         }
     }
 
-
-
     public void update(){
         yPos += dy;
         if(yPos > GameView.HEIGHT){
-            System.out.println("ASDASD");
             yPos = 0;
             if (GameView.changingState){
                 if (changing){

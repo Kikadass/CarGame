@@ -66,7 +66,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.setVisible(true);
 		bullet.setInactive();
 		background.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-
+		background.resetChanging();
 
 		newGame = true;
 	}
@@ -117,6 +117,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		if(thread!=null) {
 			background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+			gameState = 0;
 			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.car1), 32, 57);
 			smoke = new ArrayList<Smoke>();
 			bullet = new Bullet();

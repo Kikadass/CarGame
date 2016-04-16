@@ -43,44 +43,68 @@ public class Player extends Object{
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(image,xPos,yPos,null);
+        canvas.drawBitmap(image, xPos, yPos, null);
     }
 
     public void resetDx(){dx = 0;}
     public void resetScore(){score = 0;}
 
-    public void update(){
-        long elapsed = (System.nanoTime()-startTime)/1000000;
-        if(elapsed > 100){
+    public void update() {
+        long elapsed = (System.nanoTime() - startTime) / 1000000;
+        if (elapsed > 100) {
             score++;
             startTime = System.nanoTime();
         }
 
+
         // if left or right are pressed go in that direcction increasing over time
         // starting with 1 in order to give movement if touched
-        if(left){
+        if (left) {
             if (dx == 0) dx -= 1;
             else dx -= 0.3;
-        }
-        else if(right){
+        } else if (right) {
             if (dx == 0) dx += 1;
             else dx += 0.3;
-        }
-        else dx = 0;
+        } else dx = 0;
 
         // maximum turning speed
-        if(dx > 10) dx = 10;
-        if(dx < -10) dx = -10;
+        if (dx > 10) dx = 10;
+        if (dx < -10) dx = -10;
 
         xPos += dx;
 
         //do not go over the sides
-        if (xPos > 160) {
-            xPos = 160;
+        // 4 Lanes
+        if (GameView.gameState == 0) {
+            if (xPos > 160) {
+                xPos = 160;
+            }
+            if (xPos < 24) {
+                xPos = 24;
+            }
         }
-        if (xPos < 24){
-            xPos = 24;
+
+        // 3 Lanes
+        if (GameView.gameState == 1){
+            if (xPos > 122) {
+                xPos = 122;
+            }
+            if (xPos < 24) {
+                xPos = 24;
+            }
         }
+
+        //2 Lanes
+        if (GameView.gameState == 2){
+            if (xPos > 122) {
+                xPos = 122;
+            }
+            if (xPos < 65) {
+                xPos = 65;
+            }
+        }
+
+
     }
     
 }
