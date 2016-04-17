@@ -74,8 +74,8 @@ public class Background {
                     changing = false;
                     changed = true;
                     image = nextImage;
-                    if (GameView.gameState == 0) GameView.roadLine = new RoadLine(154, 48, 193, 173);
-                    if (GameView.gameState == 1) GameView.roadLine = new RoadLine(23, 173, 62, 48);
+                    if (GameView.gameState == 0) GameView.roadLine = new RoadLine(154, 45, 193, 170);
+                    if (GameView.gameState == 1) GameView.roadLine = new RoadLine(23, 170, 62, 45);
 
                 }
                 else changing = true;
