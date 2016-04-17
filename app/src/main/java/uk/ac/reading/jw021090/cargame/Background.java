@@ -2,6 +2,7 @@ package uk.ac.reading.jw021090.cargame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.media.Image;
 
 import java.util.IdentityHashMap;
@@ -14,7 +15,7 @@ public class Background {
     private Bitmap image;
     private Bitmap tempImage;
     private Bitmap nextImage;
-    private boolean changed = false;
+    public static boolean changed = false;
     private boolean changing = false;
     private int xPos = 0;
     private int yPos;
@@ -50,6 +51,9 @@ public class Background {
     public void draw(Canvas canvas){
         if (changed) {
             canvas.drawBitmap(tempImage, xPos, yPos, null);
+            if (yPos > 50){
+                GameView.roadLine.update();
+            }
         }
         else canvas.drawBitmap(image, xPos, yPos, null);
 
@@ -69,6 +73,7 @@ public class Background {
                 if (changing){
                     changing = false;
                     changed = true;
+                    GameView.roadLine = new RoadLine(154, 50, 193, 175);
                     image = nextImage;
                 }
                 else changing = true;

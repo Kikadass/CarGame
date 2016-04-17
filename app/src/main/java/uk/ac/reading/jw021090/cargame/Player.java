@@ -75,9 +75,9 @@ public class Player extends Object{
 
         //do not go over the sides
         // 4 Lanes
-        if (GameView.gameState == 0) {
-            if (xPos > 160) {
-                xPos = 160;
+        if (GameView.gameState == 0 && !Background.changed) {
+            if (xPos > 161) {
+                xPos = 161;
             }
             if (xPos < 24) {
                 xPos = 24;
@@ -85,7 +85,7 @@ public class Player extends Object{
         }
 
         // 3 Lanes
-        if (GameView.gameState == 1){
+        if (GameView.gameState == 1 && !Background.changed){
             if (xPos > 122) {
                 xPos = 122;
             }
@@ -95,7 +95,7 @@ public class Player extends Object{
         }
 
         //2 Lanes
-        if (GameView.gameState == 2){
+        if (GameView.gameState == 2 && !Background.changed){
             if (xPos > 122) {
                 xPos = 122;
             }

@@ -36,6 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private Explosion playerExplosion;
 	private boolean dead = false;
 	private int best = 0;
+	public static RoadLine roadLine;
 
 	//Handle communication from the GameThread to the View/Activity Thread
 	private Handler mHandler;
@@ -118,7 +119,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		if(thread!=null) {
 			background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
 			gameState = 0;
-			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.car1), 32, 57);
+			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 32, 57);
 			smoke = new ArrayList<Smoke>();
 			bullet = new Bullet();
 			cars = new ArrayList<Car>();
@@ -180,6 +181,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
+	public void die(){
+		player.setPlaying(false);
+		player.setVisible(false);
+		newGame = false;
+		startReset = System.nanoTime();
+		playerExplosion = new Explosion(BitmapFactory.decodeResource(getResources(),R.drawable.explosion), player.getxPos(), player.getyPos(), 32, 32, 16);
+	}
+
 	@Override
 	public  void draw(Canvas canvas){
 		super.draw(canvas);
@@ -190,7 +199,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			final int saved = canvas.save();
 			canvas.scale(scaleX, scaleY);
 
-			if (player.getScore() > 20 && gameState == 0){
+			if (player.getScore() > 10 && gameState == 0){
 				if (!background.isChanged()) {
 					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background3));
 					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto3));
@@ -201,10 +210,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					gameState = 1;
 				}
 			}
+			if (player.getScore() > 200 && gameState == 1){
+				if (!background.isChanged()) {
+					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background2));
+					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto2));
+					changingState = true;
+				}
+				else{
+					changingState = false;
+					gameState = 2;
+				}
+			}
 			background.draw(canvas);
 
 
 			bullet.draw(canvas);
+
+			if (background.isChanged()) {
+				roadLine.draw(canvas);
+				if (roadLine.collide(player));
+
+			}
 
 			for(Smoke sm: smoke){
 				sm.draw(canvas);
@@ -329,10 +355,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				int random = rnd.nextInt(3);
 				switch (random){
 					case 0:
-						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2), 32, 60, player.getScore()));
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car1_down), 32, 60, player.getScore()));
 						break;
 					case 1:
-						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car3), 34, 60, player.getScore()));
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2_down), 34, 60, player.getScore()));
 						break;
 					case 2:
 						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.police_car), 32, 60, player.getScore()));
@@ -349,15 +375,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				//update cars
 				cars.get(i).update();
 
+				// if player collides with wal while changing track dies
+				if (background.isChanged()) {
+					if (roadLine.collide(player)){
+						die();
+						break;
+					}
+				}
+
 				// if cars collide with player pause game and restart it
 				if(collision(cars.get(i),player)){
-					cars.remove(i);
-					player.setPlaying(false);
-					player.setVisible(false);
-					newGame = false;
-					startReset = System.nanoTime();
-					playerExplosion = new Explosion(BitmapFactory.decodeResource(getResources(),R.drawable.explosion), player.getxPos(), player.getyPos(), 32, 32, 16);
-
+					die();
 					break;
 				}
 
