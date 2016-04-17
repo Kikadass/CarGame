@@ -1,6 +1,7 @@
 package uk.ac.reading.jw021090.cargame;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private boolean dead = false;
 	private int best = 0;
 	public static RoadLine roadLine;
+	private Controls controls;
 
 	//Handle communication from the GameThread to the View/Activity Thread
 	private Handler mHandler;
@@ -120,6 +122,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
 			gameState = 0;
 			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 32, 57);
+			controls = new Controls(BitmapFactory.decodeResource(getResources(), R.drawable.wheel_left), BitmapFactory.decodeResource(getResources(), R.drawable.wheel_right));
 			smoke = new ArrayList<Smoke>();
 			bullet = new Bullet();
 			cars = new ArrayList<Car>();
@@ -199,28 +202,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			final int saved = canvas.save();
 			canvas.scale(scaleX, scaleY);
 
-			if (player.getScore() > 10 && gameState == 0){
-				if (!background.isChanged()) {
-					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background3));
-					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto3));
-					changingState = true;
-				}
-				else{
-					changingState = false;
-					gameState = 1;
-				}
-			}
-			if (player.getScore() > 200 && gameState == 1){
-				if (!background.isChanged()) {
-					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background2));
-					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto2));
-					changingState = true;
-				}
-				else{
-					changingState = false;
-					gameState = 2;
-				}
-			}
 			background.draw(canvas);
 
 
@@ -228,8 +209,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			if (background.isChanged()) {
 				roadLine.draw(canvas);
-				if (roadLine.collide(player));
-
 			}
 
 			for(Smoke sm: smoke){
@@ -247,6 +226,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			if(!player.isVisible()){
 				playerExplosion.draw(canvas);
 			}
+
+			controls.draw(canvas);
 
 			drawMessage(canvas);
 
@@ -289,14 +270,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			//else depending on where the finger is will be left or right
 
 			//left
-			else if(event.getY() > getHeight() - getHeight()/ 7) {
-				if (event.getX() < getWidth() / 2) {
+			else if(event.getY() > getHeight() - getHeight()/ 5) {
+				if (event.getX() < getWidth() / 3) {
 					player.setLeft(true);
-				} else if (event.getX() >= getWidth() / 2) {
+				} else if (event.getX() >= getWidth() - getWidth() / 3) {
 					player.setRight(true);
 				}
 			}
-			else if(event.getY() < getHeight() - getHeight()/ 7) {
+			else if(event.getY() < getHeight() - getHeight()/ 5) {
 				// Shots fired
 				if(bullet.shoot(player.getxPos()+ player.width/2,player.getyPos(),bullet.UP)){
 					//soundPool.play(shootID, 1, 1, 0, 0, 1);
@@ -329,7 +310,35 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void update(){
 		if (player.isPlaying()) {
 			player.update();
+
+			// BACKGROUND
+			// from one point the road passes from 4 lanes into 3
+			if (player.getScore() > 10 && gameState == 0){
+				if (!background.isChanged()) {
+					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background3));
+					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto3));
+					changingState = true;
+				}
+				else{
+					changingState = false;
+					gameState = 1;
+				}
+			}
+			// from one point the road passes from 3 lanes into 2
+			if (player.getScore() > 200 && gameState == 1){
+				if (!background.isChanged()) {
+					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background2));
+					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto2));
+					changingState = true;
+				}
+				else{
+					changingState = false;
+					gameState = 2;
+				}
+			}
 			background.update();
+
+
 			// Update the players bullet
 			if(bullet.getStatus()){
 				bullet.update(GameThread.FPS);

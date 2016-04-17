@@ -75,22 +75,22 @@ public class Player extends Object{
 
         //do not go over the sides
         // 4 Lanes
-        if (GameView.gameState == 0 && !Background.changed) {
+        if ((GameView.gameState == 0 && !Background.changed) || (GameView.gameState == 1 && Background.changed)) {
             if (xPos > 161) {
                 xPos = 161;
             }
-            if (xPos < 24) {
-                xPos = 24;
+            if (xPos < 23) {
+                xPos = 23;
             }
         }
 
         // 3 Lanes
-        if (GameView.gameState == 1 && !Background.changed){
+        if ((GameView.gameState == 1 && !Background.changed) || (GameView.gameState == 2 && Background.changed)){
             if (xPos > 122) {
                 xPos = 122;
             }
-            if (xPos < 24) {
-                xPos = 24;
+            if (xPos < 23) {
+                xPos = 23;
             }
         }
 
@@ -99,8 +99,8 @@ public class Player extends Object{
             if (xPos > 122) {
                 xPos = 122;
             }
-            if (xPos < 65) {
-                xPos = 65;
+            if (xPos < 62) {
+                xPos = 62;
             }
         }
 

@@ -31,9 +31,19 @@ public class RoadLine extends Object{
         int ix = (int) ((player.yPos-yPos+xPos*((y2Pos-yPos)/(x2Pos-xPos)))/((y2Pos-yPos)/(x2Pos-xPos)));
 
         // if that point of intersecction is in the section of the line wanted and the player is there return true.
-        // the "+2" is to make the crash a bit more reallistic
+        if (ix < xPos && player.xPos > 122 && GameView.gameState == 1){
+                player.xPos = 122;
+        }
+
+        if (ix > x2Pos && player.xPos < 22 && GameView.gameState == 2){
+            player.xPos = 22;
+        }
+
         if (xPos < ix && ix < x2Pos){
-            if (player.xPos > ix-player.width+2) {
+            if (player.xPos > ix-player.width && GameView.gameState == 1) {
+                return true;
+            }
+            if (player.xPos < ix && GameView.gameState == 2) {
                 return true;
             }
         }
