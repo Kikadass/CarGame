@@ -15,22 +15,15 @@ import android.view.View;
 public class GameThread extends Thread {
 
 	//Different mMode states
-	public static final int STATE_LOSE = 1;
-	public static final int STATE_PAUSE = 2;
-	public static final int STATE_READY = 3;
-	public static final int STATE_RUNNING = 4;
-	public static final int STATE_WIN = 5;
+
 	public static int FPS = 30;
 	private double averageFPS;
-	protected int mMode = 1;				//Control variable for the mode of the game (e.g. STATE_WIN)
 	private boolean running = false;
+	private boolean ended = false;
 	private SurfaceHolder surfaceHolder;	//The surface this thread (and only this thread) writes upon
-	private Handler mHandler;				//the message handler to the View/Activity thread
 	private Context mContext;				//Android Context - this stores almost all we need to know
 	public GameView gameView;				//The view
-	protected int canvasWidth = 1;			//We might want to extend this call - therefore protected
-	protected int canvasHeight = 1;
-	protected long mLastTime = 0;			//Last time we updated the game physics
+
 	static final Integer monitor = 1;		//Used to ensure appropriate threading
 
 
@@ -38,11 +31,9 @@ public class GameThread extends Thread {
 	public GameThread(GameView gameView) {
 		super();
 		this.gameView = gameView;
-		
+
 		surfaceHolder = gameView.getHolder();
-		mHandler = gameView.getmHandler();
 		mContext = gameView.getContext();
-		
 	}
 	
 	/*
@@ -51,19 +42,10 @@ public class GameThread extends Thread {
 	 * Dare I say memory leak...
 	 */
 	public void cleanup() {
+
 		this.mContext = null;
 		this.gameView = null;
-		this.mHandler = null;
 		this.surfaceHolder = null;
-	}
-	
-	//Starting up the game
-	public void doStart() {
-		synchronized(monitor) {
-			mLastTime = System.currentTimeMillis() + 100;
-
-			setState(STATE_RUNNING);
-		}
 	}
 	
 	//The thread start
@@ -77,128 +59,70 @@ public class GameThread extends Thread {
 		long targetTime = 1000/FPS;
 
 		Canvas canvasRun;
-		while (running) {
-			canvasRun = null;
-			startTime = System.nanoTime();
+		while (!ended) {
+			while (running) {
+
+				canvasRun = null;
+				startTime = System.nanoTime();
 
 
-			try {
-				canvasRun = surfaceHolder.lockCanvas();
-				synchronized (surfaceHolder){
-					this.gameView.update();
-					this.gameView.draw(canvasRun);
+				try {
+					canvasRun = surfaceHolder.lockCanvas();
+					synchronized (surfaceHolder) {
+						this.gameView.update();
+						this.gameView.draw(canvasRun);
+
+					}
+				} catch (Exception e) {
+				} finally {
+					if (canvasRun != null) {
+						if (surfaceHolder != null)
+							surfaceHolder.unlockCanvasAndPost(canvasRun);
+					}
 				}
-			} catch(Exception e){}
-			finally {
-				if (canvasRun != null) {
-					if(surfaceHolder != null)
-						surfaceHolder.unlockCanvasAndPost(canvasRun);
+
+				// to control the FPS
+				timeMillis = (System.nanoTime() - startTime) / 1000000;
+				waitTime = targetTime - timeMillis;
+
+				try {
+					this.sleep(waitTime);
+				} catch (Exception e) {
 				}
-			}
 
-			// to control the FPS
-			timeMillis = (System.nanoTime() - startTime) / 1000000;
-			waitTime = targetTime-timeMillis;
-
-			try{
-				this.sleep(waitTime);
-			}
-			catch(Exception e){}
-
-			totalTime += System.nanoTime()-startTime;
-			frameCount++;
-			if(frameCount == FPS){
-				averageFPS = 1000/((totalTime/frameCount)/1000000);
-				frameCount =0;
-				totalTime = 0;
-				System.out.println(averageFPS);
+				totalTime += System.nanoTime() - startTime;
+				frameCount++;
+				if (frameCount == FPS) {
+					averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+					frameCount = 0;
+					totalTime = 0;
+					System.out.println(averageFPS);
+				}
 			}
 		}
 	}
-
-
 
 
 	/*
 	 * Game states
 	 */
 	public void pause() {
-		synchronized (monitor) {
-			if (mMode == STATE_RUNNING) setState(STATE_PAUSE);
-		}
-	}
-	
-	public void unpause() {
-		// Move the real time clock up to now
-		synchronized (monitor) {
-			mLastTime = System.currentTimeMillis();
-		}
-		setState(STATE_RUNNING);
-	}	
-
-	//Send messages to View/Activity thread
-	public void setState(int mode) {
-		synchronized (monitor) {
-			setState(mode, null);
-		}
+		this.running = false;
 	}
 
-	public void setState(int mode, CharSequence message) {
-		synchronized (monitor) {
-			mMode = mode;
-
-			if (mMode == STATE_RUNNING) {
-				Message msg = mHandler.obtainMessage();
-				Bundle b = new Bundle();
-				b.putString("text", "");
-				b.putInt("viz", View.INVISIBLE);
-				b.putBoolean("showAd", false);
-				msg.setData(b);
-				mHandler.sendMessage(msg);
-			}
-			else {
-				Message msg = mHandler.obtainMessage();
-				Bundle b = new Bundle();
-
-				Resources res = mContext.getResources();
-				CharSequence str = "";
-				if (mMode == STATE_READY)
-					str = res.getText(R.string.mode_ready);
-				else
-					if (mMode == STATE_PAUSE)
-						str = res.getText(R.string.mode_pause);
-					else
-						if (mMode == STATE_LOSE)
-							str = res.getText(R.string.mode_lose);
-						else
-							if (mMode == STATE_WIN) {
-								str = res.getText(R.string.mode_win);
-							}
-
-				if (message != null) {
-					str = message + "\n" + str;
-				}
-
-				b.putString("text", str.toString());
-				b.putInt("viz", View.VISIBLE);
-
-				msg.setData(b);
-				mHandler.sendMessage(msg);
-			}
-		}
+	public void unPause() {
+		this.running = true;
 	}
+
 
 	/*
 	 * Getter and setter
 	 */
-	
-	public void setRunning(boolean running) {
-		this.running = running;
+	public boolean isRunning() {
+		return running;
 	}
-	
-	public int getMode() {
-		return mMode;
-	}
+
+
 
 }
 

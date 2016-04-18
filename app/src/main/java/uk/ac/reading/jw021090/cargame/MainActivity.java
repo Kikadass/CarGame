@@ -2,24 +2,17 @@ package uk.ac.reading.jw021090.cargame;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 
 public class MainActivity extends Activity {
 
-    private static final int MENU_RESUME = 1;
-    private static final int MENU_START = 2;
-    private static final int MENU_STOP = 3;
-
-    private GameThread mGameThread;
-    private GameView mGameView;
+    private GameView gameView;
+    public static boolean started = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -49,8 +42,8 @@ public class MainActivity extends Activity {
     private void startGame() {
 
         //Set up a new game, we don't care about previous states
-        setContentView(new GameView(this, null));
-
+        started = true;
+        gameView = new GameView(this, null);
 
     }
 
@@ -58,56 +51,33 @@ public class MainActivity extends Activity {
 	 * Activity state functions
 	 */
 
+
+    // when middle button pressed
     @Override
     protected void onPause() {
         super.onPause();
 
-        if(mGameThread.getMode() == GameThread.STATE_RUNNING) {
-            mGameThread.setState(GameThread.STATE_PAUSE);
+        if (started) {
+            if (gameView.getThread().isRunning()) {
+                gameView.getThread().pause();
+            }
         }
     }
+
+
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        mGameView.cleanup();
-        mGameThread = null;
-        mGameView = null;
-    }
-    
-    /*
-     * UI Functions
-     */
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        menu.add(0, MENU_START, 0, R.string.menu_start);
-        menu.add(0, MENU_STOP, 0, R.string.menu_stop);
-        menu.add(0, MENU_RESUME, 0, R.string.menu_resume);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_START:
-                mGameThread.doStart();
-                return true;
-            case MENU_STOP:
-                mGameThread.setState(GameThread.STATE_LOSE,  getText(R.string.message_stopped));
-                return true;
-            case MENU_RESUME:
-                mGameThread.unpause();
-                return true;
+        if (started) {
+            gameView.cleanup();
+            gameView = null;
         }
-
-        return false;
     }
+
+
 
 }
 

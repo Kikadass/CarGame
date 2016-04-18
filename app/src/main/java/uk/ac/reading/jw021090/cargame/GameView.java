@@ -59,6 +59,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		setFocusable(true);
 	}
 
+    public GameThread getThread(){
+        return thread;
+    }
+
 	public void startGame(){
 		// updating best score
 		gameState = 0;
@@ -78,9 +82,63 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		newGame = true;
 	}
 
-	//Used to release any resources.
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if(thread!=null) {
+            scaleX = getWidth()/(float)WIDTH;
+            scaleY = getHeight()/(float)HEIGHT;
+            background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+            gameState = 0;
+            player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 32, 57);
+            controls = new Controls(BitmapFactory.decodeResource(getResources(), R.drawable.wheel_left), BitmapFactory.decodeResource(getResources(), R.drawable.wheel_right));
+            menu = new Menu(BitmapFactory.decodeResource(getResources(), R.drawable.menu), BitmapFactory.decodeResource(getResources(), R.drawable.active_menu1), WIDTH - 45);
+            smoke = new ArrayList<Smoke>();
+            bullet = new Bullet();
+            cars = new ArrayList<Car>();
+
+            smokeTimer = System.nanoTime();
+            carsTimer = System.nanoTime();
+
+            thread.unPause();
+
+            if(thread.getState() == Thread.State.NEW){
+                //Just start the new thread
+                thread.start();
+            }
+            else {
+                if(thread.getState() == Thread.State.TERMINATED){
+                    //Start a new thread
+                    //Should be this to update screen with old game: new GameThread(this, thread);
+                    //The method should set all fields in new thread to the value of old thread's fields
+                    thread = new GameThread(this);
+                    thread.start();
+                }
+            }
+        }
+        else {
+            thread.unPause();
+
+            if(thread.getState() == Thread.State.NEW){
+                //Just start the new thread
+                thread.start();
+            }
+            else {
+                if(thread.getState() == Thread.State.TERMINATED){
+                    //Start a new thread
+                    //Should be this to update screen with old game: new GameThread(this, thread);
+                    //The method should set all fields in new thread to the value of old thread's fields
+                    thread = new GameThread(this);
+                    thread.start();
+                }
+            }
+        }
+    }
+
+
+    //Used to release any resources.
 	public void cleanup() {
-		this.thread.setRunning(false);
+
+        this.thread.pause();
 		this.thread.cleanup();
 
 		this.removeCallbacks(thread);
@@ -92,20 +150,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		holder.removeCallback(this);
 	}
 
-	/*
-	 * Setters and Getters
-	 */
-	
-
-	public Handler getmHandler() {
-		return mHandler;
-	}
-
-	public void setmHandler(Handler mHandler) {
-		this.mHandler = mHandler;
-	}
-
-
 	
 	/*
 	 * Screen functions
@@ -114,82 +158,48 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	//ensure that we go into pause state if we go out of focus
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
-		if(thread!=null) {
-			if (!hasWindowFocus)
-				thread.pause();
-		}
+
+        if(thread!=null) {
+            if (thread.isRunning()) {
+                if (!hasWindowFocus) {
+                    pause();
+                    thread.pause();
+                }
+            }
+            else if (hasWindowFocus && MainActivity.started) {
+                thread.unPause();
+            }
+        }
 	}
 
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		if(thread!=null) {
-            scaleX = getWidth()/(float)WIDTH;
-            scaleY = getHeight()/(float)HEIGHT;
-            background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-			gameState = 0;
-			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 32, 57);
-			controls = new Controls(BitmapFactory.decodeResource(getResources(), R.drawable.wheel_left), BitmapFactory.decodeResource(getResources(), R.drawable.wheel_right));
-            menu = new Menu(BitmapFactory.decodeResource(getResources(), R.drawable.menu), BitmapFactory.decodeResource(getResources(), R.drawable.active_menu1), WIDTH - 45);
-			smoke = new ArrayList<Smoke>();
-			bullet = new Bullet();
-			cars = new ArrayList<Car>();
 
-			smokeTimer = System.nanoTime();
-			carsTimer = System.nanoTime();
-
-			thread.setRunning(true);
-
-			if(thread.getState() == Thread.State.NEW){
-				//Just start the new thread
-				thread.start();
-			}
-			else {
-				if(thread.getState() == Thread.State.TERMINATED){
-					//Start a new thread
-					//Should be this to update screen with old game: new GameThread(this, thread);
-					//The method should set all fields in new thread to the value of old thread's fields 
-					thread.setRunning(true);
-					thread.start();
-				}
-			}
-		}
-	}
-	
 	//Always called once after surfaceCreated. Tell the GameThread the actual size
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-	}
+
+    }
 
 	/*
 	 * Need to stop the GameThread if the surface is destroyed
-	 * Remember this doesn't need to happen when app is paused on even stopped.
+	 * Remember this doesn't need to happen when app is paused or even stopped.
 	 */
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
-		
-		boolean retry = true;
-		if(thread!=null) {
-			thread.setRunning(false);
-		}
+        startGame();
 
-		int counter = 0;
+    }
 
-		//join the thread with this thread
-		while (retry && counter < 1000) {
-			try {
-				thread.setRunning(false);
-				if(thread!=null) {
-					thread.join();
-				}
-				retry = false;
-				thread = null;
-			} 
-			catch (InterruptedException e) {
-                e.printStackTrace();
-			}
-			counter++;
-		}
-	}
+    public void pause(){
+        menu.setVisible(true);
+        player.setPlaying(false);
+        paused = true;
+    }
+
+    public void unPause(){
+        paused = false;
+        player.setPlaying(true);
+        menu.setVisible(false);
+    }
 
 	public void die(){
 		player.setPlaying(false);
@@ -282,9 +292,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
             else if(event.getY() < getHeight()/6 && event.getX() > getWidth() - getWidth()/4) {
-                menu.setVisible(true);
-                player.setPlaying(false);
-                paused = true;
+                pause();
             }
 
 
@@ -294,9 +302,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 // continue
                 if(event.getY()/scaleY > menu.getActive_yPos()-15 && event.getY()/scaleY < menu.getActive_yPos()+5
                     && x) {
-                    paused = false;
-                    player.setPlaying(true);
-                    menu.setVisible(false);
+                    unPause();
                 }
                 else if(event.getY()/scaleY > menu.getActive_yPos()+menu.height-15 && event.getY()/scaleY < menu.getActive_yPos()+menu.height+5
                         && x) {
@@ -336,7 +342,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void update(){
-		if (player.isPlaying()) {
+		if (player.isPlaying() && thread.isRunning()) {
 			player.update();
 
 			// BACKGROUND
