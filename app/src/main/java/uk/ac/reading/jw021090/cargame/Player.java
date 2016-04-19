@@ -94,8 +94,9 @@ public class Player extends Object{
             }
         }
 
+        System.out.println(Background.changed + "game state " + GameView.gameState);
         //2 Lanes
-        if (GameView.gameState == 2 && !Background.changed){
+        if (GameView.gameState == 2 && !Background.changed || (GameView.gameState == 3 && Background.changed)){
             if (xPos > 122) {
                 xPos = 122;
             }

@@ -139,6 +139,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //Used to release any resources.
 	public void cleanup() {
+        System.out.println("CLEANUP");
 
         this.thread.pause();
 		this.thread.cleanup();
@@ -427,6 +428,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 			*/
 
+            // if player collides with wal while changing track dies
+            if (background.isChanged()) {
+                if (roadLine.collide(player)){
+                    die();
+                }
+            }
+
+            /*
 			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
 			if (elapsedCars > (2000 - player.getScore()/4)){
@@ -453,13 +462,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				//update cars
 				cars.get(i).update();
 
-				// if player collides with wal while changing track dies
-				if (background.isChanged()) {
-					if (roadLine.collide(player)){
-						die();
-						break;
-					}
-				}
 
 				// if cars collide with player pause game and restart it
 				if(collision(cars.get(i),player)){
@@ -488,7 +490,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					cars.remove(i);
 					break;
 				}
-			}
+			}*/
 
 			// add smoke on timer
 			long elapsedSmoke = (System.nanoTime() - smokeTimer)/1000000;

@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // Perform action on click
                 startActivity(intent1);
+                finish();
             }
         });
 
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // Perform action on click
                 startActivity(intent2);
+                finish();
 
             }
         });

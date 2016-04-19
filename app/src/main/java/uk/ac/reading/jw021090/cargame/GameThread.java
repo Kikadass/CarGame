@@ -21,7 +21,6 @@ public class GameThread extends Thread {
 	private boolean running = false;
 	private boolean ended = false;
 	private SurfaceHolder surfaceHolder;	//The surface this thread (and only this thread) writes upon
-	private Context mContext;				//Android Context - this stores almost all we need to know
 	public GameView gameView;				//The view
 
 	static final Integer monitor = 1;		//Used to ensure appropriate threading
@@ -33,7 +32,6 @@ public class GameThread extends Thread {
 		this.gameView = gameView;
 
 		surfaceHolder = gameView.getHolder();
-		mContext = gameView.getContext();
 	}
 	
 	/*
@@ -42,10 +40,10 @@ public class GameThread extends Thread {
 	 * Dare I say memory leak...
 	 */
 	public void cleanup() {
-
-		this.mContext = null;
 		this.gameView = null;
 		this.surfaceHolder = null;
+		ended = true;
+		running = false;
 	}
 	
 	//The thread start

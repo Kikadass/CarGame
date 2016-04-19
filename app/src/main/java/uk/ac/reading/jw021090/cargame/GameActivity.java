@@ -57,6 +57,8 @@ public class GameActivity extends Activity{
     // when middle button pressed
     @Override
     protected void onPause() {
+        System.out.println("PAUSE");
+
         super.onPause();
 
         if (started) {
@@ -70,12 +72,21 @@ public class GameActivity extends Activity{
 
     @Override
     protected void onDestroy() {
+        System.out.println("DESTROY");
         super.onDestroy();
 
         if (started) {
             gameView.cleanup();
             gameView = null;
         }
+
+        sharedPreferences = null;
+        files = null;
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
 

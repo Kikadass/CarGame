@@ -35,8 +35,8 @@ public class RoadLine extends Object{
                 player.xPos = 122;
         }
 
-        if (ix > x2Pos && player.xPos < 22 && GameView.gameState == 2){
-            player.xPos = 22;
+        if (ix > x2Pos && player.xPos < 62 && GameView.gameState == 2){
+            player.xPos = 62;
         }
 
         if (xPos < ix && ix < x2Pos){
