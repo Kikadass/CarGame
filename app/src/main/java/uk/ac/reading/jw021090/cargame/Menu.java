@@ -1,5 +1,6 @@
 package uk.ac.reading.jw021090.cargame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,20 +36,20 @@ public class Menu extends Object {
         return active_yPos;
     }
 
-    public void draw(Canvas canvas){
+    public void draw(Canvas canvas, Resources res){
         Paint alphaPaint = new Paint();
         alphaPaint.setAlpha(200);
         // now lets draw using alphaPaint instance
         canvas.drawBitmap(image, xPos, yPos, alphaPaint);
 
         if (isVisible()){
-            canvas.drawBitmap(active_menu, GameView.WIDTH/2 - 75, GameView.HEIGHT/2 - 75, null);
+            canvas.drawBitmap(active_menu, GameView.WIDTH / 2 - 75, GameView.HEIGHT / 2 - 75, null);
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setTextSize(15);
             paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-            canvas.drawText("CONTINUE", active_xPos, active_yPos, paint);
-            canvas.drawText("RESTART", active_xPos, active_yPos+height, paint);
+            canvas.drawText(res.getString(R.string.menu_continue), active_xPos, active_yPos, paint);
+            canvas.drawText(res.getString(R.string.menu_restart), active_xPos, active_yPos+height, paint);
         }
     }
 }

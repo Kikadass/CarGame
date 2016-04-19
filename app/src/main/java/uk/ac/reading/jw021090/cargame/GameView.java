@@ -1,7 +1,7 @@
 package uk.ac.reading.jw021090.cargame;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +14,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -31,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean newGame = false;
     private boolean paused = false;
     private boolean dead = false;
-    private int best = 0;
+    private int highScore = 0;
     private float scaleX;
     private float scaleY;
     private Background background;
@@ -56,6 +58,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		thread = new GameThread(this);
 
+
 		setFocusable(true);
 	}
 
@@ -64,7 +67,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 	public void startGame(){
-		// updating best score
 		gameState = 0;
 		changingState = false;
 		smoke.clear();
@@ -166,7 +168,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     thread.pause();
                 }
             }
-            else if (hasWindowFocus && MainActivity.started) {
+            else if (hasWindowFocus && GameActivity.started) {
                 thread.unPause();
             }
         }
@@ -189,6 +191,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+    public int getHighScore(){
+        return highScore;
+    }
+
+    public void setHighScore(int score){
+        highScore = score;
+    }
+
+    public void saveScore(int highScore){
+		WritingScore write = new WritingScore("http://www.kidscoding.tk/Scores.txt", new File(GameActivity.files, "output.txt"));
+		List<ScoreModel> scores = write.read();
+		boolean added = false;
+		for (int i = 0; i < scores.size(); i++) {
+			if (highScore >= scores.get(i).getScore()) {
+				if (scores.size() < 10){
+					scores.add(scores.get(scores.size()-1));
+				}
+				for (int j = scores.size()-1; j > i; j--){
+					scores.get(j).setModel(scores.get(j--));
+				}
+				scores.get(i).setModel(new ScoreModel(highScore));
+				added = true;
+				break;
+			}
+		}
+		if (!added && scores.size() < 10){
+			scores.add(new ScoreModel(highScore));
+		}
+
+		write.execute(scores);
+    }
+
     public void pause(){
         menu.setVisible(true);
         player.setPlaying(false);
@@ -208,6 +242,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		startReset = System.nanoTime();
 		playerExplosion = new Explosion(BitmapFactory.decodeResource(getResources(),R.drawable.explosion), player.getxPos(), player.getyPos(), 32, 32, 16);
 	}
+
 
 	@Override
 	public  void draw(Canvas canvas){
@@ -240,7 +275,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 
 			controls.draw(canvas);
-            menu.draw(canvas);
 
 			drawMessage(canvas);
 
@@ -250,25 +284,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void drawMessage(Canvas canvas){
+        Resources res = getResources();
+
+		menu.draw(canvas, res);
+
 		Paint paint = new Paint();
 		paint.setColor(Color.RED);
 		paint.setTextSize(20);
 		paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-		canvas.drawText("DISTANCE: " + (player.getScore()), 30, 20, paint);
+		canvas.drawText(res.getString(R.string.current_score) + ": " + (player.getScore()), 30, 20, paint);
 
 		if (!player.isPlaying() && !paused) {
-			if (player.getScore() > best) {
-                best = player.getScore();
+			if (player.getScore() > highScore) {
+                highScore = player.getScore();
+                saveScore(highScore);
             }
-            canvas.drawText("BEST: " + best, WIDTH / 7, HEIGHT / 2 - 30, paint);
+            canvas.drawText(res.getString(R.string.high_score) + ": " + highScore, WIDTH / 7, HEIGHT / 2 - 30, paint);
 		}
 
 		if(!player.isPlaying() && dead) {
-			Paint paint1 = new Paint();
-            paint1.setColor(Color.RED);
-            paint1.setTextSize(20);
-            paint1.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-            canvas.drawText("PRESS TO START", WIDTH / 7, HEIGHT / 2, paint1);
+            canvas.drawText(res.getString(R.string.press_start), WIDTH / 7, HEIGHT / 2, paint);
 		}
 	}
 

@@ -1,16 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ViewFlipper
-        android:id="@+id/flipper"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:autoStart="false">
+    <RelativeLayout
+        android:id="@+id/menuLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-        <include layout="@layout/menu_layout" />
-        <include layout="@layout/game_layout" />
-    </ViewFlipper>
+        <Button
+            android:id= "@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_button"
+            android:layout_above="@+id/scores"
+            android:textSize="@dimen/menu_text"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
 
+        <Button
+            android:id= "@+id/scores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scores_button"
+            android:textSize="@dimen/menu_text"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
 
-</FrameLayout>
+    </RelativeLayout>
+</LinearLayout>

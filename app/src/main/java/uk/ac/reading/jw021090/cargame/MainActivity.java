@@ -1,6 +1,8 @@
 package uk.ac.reading.jw021090.cargame;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -8,12 +10,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 
+import java.io.File;
+
 
 public class MainActivity extends Activity {
-
-    private GameView gameView;
-    public static boolean started = false;
-
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -26,58 +26,26 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 
-
+        final Intent intent1 = new Intent(this, GameActivity.class);
         final Button play = (Button) findViewById(R.id.play);
-        final ViewFlipper viewFlipper;viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
         play.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                viewFlipper.showNext();
-                startGame();
+                startActivity(intent1);
+            }
+        });
+
+        final Intent intent2 = new Intent(this, ScoreActivity.class);
+        final Button scores = (Button) findViewById(R.id.scores);
+        scores.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                startActivity(intent2);
+
             }
         });
 
     }
-
-    private void startGame() {
-
-        //Set up a new game, we don't care about previous states
-        started = true;
-        gameView = new GameView(this, null);
-
-    }
-
-	/*
-	 * Activity state functions
-	 */
-
-
-    // when middle button pressed
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (started) {
-            if (gameView.getThread().isRunning()) {
-                gameView.getThread().pause();
-            }
-        }
-    }
-
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (started) {
-            gameView.cleanup();
-            gameView = null;
-        }
-    }
-
-
 
 }
 
