@@ -435,7 +435,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
-            /*
+
 			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
 			if (elapsedCars > (2000 - player.getScore()/4)){
@@ -459,38 +459,37 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			//loop through every car and check collision and remove
 			for(int i = 0; i < cars.size();i++) {
-				//update cars
-				cars.get(i).update();
+                //update cars
+                cars.get(i).update();
 
 
-				// if cars collide with player pause game and restart it
-				if(collision(cars.get(i),player)){
-					die();
-					break;
-				}
+                // if cars collide with player pause game and restart it
+                if (collision(cars.get(i), player)) {
+                    die();
+                    break;
+                }
 
-				// if two cars collide, set the same speed in order not to go on top of each other
-				for(int j = 0; j < cars.size(); j++) {
-					if (i != j) {
-						if (collision(cars.get(i), cars.get(j))) {
-							if (cars.get(i).getSpeed() > cars.get(j).getSpeed()){
-								cars.get(i).setyPos(cars.get(i).getyPos()-cars.get(i).getSpeed()*2);
-								cars.get(i).setSpeed(cars.get(j).getSpeed());
-							}
-							else {
-								cars.get(j).setyPos(cars.get(j).getyPos()-cars.get(j).getSpeed()*2);
-								cars.get(j).setSpeed(cars.get(i).getSpeed());
-							}
-						}
-					}
-				}
+                // if two cars collide, set the same speed in order not to go on top of each other
+                for (int j = 0; j < cars.size(); j++) {
+                    if (i != j) {
+                        if (collision(cars.get(i), cars.get(j))) {
+                            if (cars.get(i).getSpeed() > cars.get(j).getSpeed()) {
+                                cars.get(i).setyPos(cars.get(i).getyPos() - cars.get(i).getSpeed() * 2);
+                                cars.get(i).setSpeed(cars.get(j).getSpeed());
+                            } else {
+                                cars.get(j).setyPos(cars.get(j).getyPos() - cars.get(j).getSpeed() * 2);
+                                cars.get(j).setSpeed(cars.get(i).getSpeed());
+                            }
+                        }
+                    }
+                }
 
-				//remove car if it is way off the screen
-				if(cars.get(i).getxPos()<-100){
-					cars.remove(i);
-					break;
-				}
-			}*/
+                //remove car if it is way off the screen
+                if (cars.get(i).getxPos() < -100) {
+                    cars.remove(i);
+                    break;
+                }
+            }
 
 			// add smoke on timer
 			long elapsedSmoke = (System.nanoTime() - smokeTimer)/1000000;

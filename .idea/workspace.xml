@@ -17,7 +17,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7edda3d0-0b26-48b5-824c-22fc53a8d332" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CarGame.iws" />
@@ -46,11 +46,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GameView.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GameView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="432" column="35" selection-start-line="432" selection-start-column="35" selection-end-line="432" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.54805726">
+              <caret line="475" column="65" selection-start-line="475" selection-start-column="65" selection-end-line="475" selection-end-column="65" />
               <folding>
                 <element signature="e#3586#3606#0" expanded="false" />
                 <element signature="e#4236#4256#0" expanded="false" />
@@ -151,10 +151,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7648262">
+            <state vertical-scroll-proportion="0.0">
               <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
               <folding />
             </state>
@@ -1387,9 +1387,9 @@
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/ScoreActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameThread.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" />
       </list>
     </option>
   </component>
@@ -1988,7 +1988,13 @@
       <option name="project" value="LOCAL" />
       <updated>1461057946739</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="minor issues fixed">
+      <created>1461057963884</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1461057963884</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2444,29 +2450,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="432" column="35" selection-start-line="432" selection-start-column="35" selection-end-line="432" selection-end-column="35" />
-          <folding>
-            <element signature="e#3586#3606#0" expanded="false" />
-            <element signature="e#4236#4256#0" expanded="false" />
-            <element signature="e#5857#5858#0" expanded="true" />
-            <element signature="e#5889#5890#0" expanded="true" />
-            <element signature="method#saveScore#0;class#GameView#0" expanded="false" />
-            <element signature="method#pause#0;class#GameView#0" expanded="false" />
-            <element signature="method#unPause#0;class#GameView#0" expanded="false" />
-            <element signature="method#die#0;class#GameView#0" expanded="false" />
-            <element signature="method#draw#0;class#GameView#0" expanded="false" />
-            <element signature="method#drawMessage#0;class#GameView#0" expanded="false" />
-            <element signature="method#onTouchEvent#0;class#GameView#0" expanded="false" />
-            <element signature="e#8897#8958#0" expanded="false" />
-            <element signature="method#collision#0;class#GameView#0" expanded="false" />
-            <element signature="e#10698#10711#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Background.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2485,9 +2468,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7648262">
+        <state vertical-scroll-proportion="0.0">
           <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.54805726">
+          <caret line="475" column="65" selection-start-line="475" selection-start-column="65" selection-end-line="475" selection-end-column="65" />
+          <folding>
+            <element signature="e#3586#3606#0" expanded="false" />
+            <element signature="e#4236#4256#0" expanded="false" />
+            <element signature="e#5857#5858#0" expanded="true" />
+            <element signature="e#5889#5890#0" expanded="true" />
+            <element signature="method#saveScore#0;class#GameView#0" expanded="false" />
+            <element signature="method#pause#0;class#GameView#0" expanded="false" />
+            <element signature="method#unPause#0;class#GameView#0" expanded="false" />
+            <element signature="method#die#0;class#GameView#0" expanded="false" />
+            <element signature="method#draw#0;class#GameView#0" expanded="false" />
+            <element signature="method#drawMessage#0;class#GameView#0" expanded="false" />
+            <element signature="method#onTouchEvent#0;class#GameView#0" expanded="false" />
+            <element signature="e#8897#8958#0" expanded="false" />
+            <element signature="method#collision#0;class#GameView#0" expanded="false" />
+            <element signature="e#10698#10711#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
