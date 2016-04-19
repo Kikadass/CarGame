@@ -17,18 +17,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7edda3d0-0b26-48b5-824c-22fc53a8d332" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/taskArtifacts.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameThread.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/ScoreActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/ScoreActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/row.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/row.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CarGame.iws" />
@@ -82,10 +71,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RoadLine.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RoadLine.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43762782">
+            <state vertical-scroll-proportion="0.0">
               <caret line="37" column="42" selection-start-line="37" selection-start-column="42" selection-end-line="37" selection-end-column="42" />
               <folding />
             </state>
@@ -162,11 +151,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="87" column="41" selection-start-line="87" selection-start-column="41" selection-end-line="87" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.7648262">
+              <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1398,9 +1387,9 @@
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/ScoreActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameThread.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/GameView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java" />
       </list>
     </option>
   </component>
@@ -1993,7 +1982,13 @@
       <option name="project" value="LOCAL" />
       <updated>1461051244739</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="minor issues fixed">
+      <created>1461057946739</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1461057946739</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2017,7 +2012,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.42491657" sideWeight="0.3651386" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.42491657" sideWeight="0.6348614" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.42491657" sideWeight="0.6348614" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30277187" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.49573562" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32369298" sideWeight="0.48081023" order="2" side_tool="false" content_ui="tabs" />
@@ -2064,7 +2059,8 @@
     <MESSAGE value="On screen manu Done" />
     <MESSAGE value="all home and return buttons + when not focused fixed" />
     <MESSAGE value="scores in device" />
-    <option name="LAST_COMMIT_MESSAGE" value="scores in device" />
+    <MESSAGE value="minor issues fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor issues fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2479,18 +2475,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="87" column="41" selection-start-line="87" selection-start-column="41" selection-end-line="87" selection-end-column="41" />
+          <caret line="37" column="42" selection-start-line="37" selection-start-column="42" selection-end-line="37" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/RoadLine.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/uk/ac/reading/jw021090/cargame/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43762782">
-          <caret line="37" column="42" selection-start-line="37" selection-start-column="42" selection-end-line="37" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.7648262">
+          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
           <folding />
         </state>
       </provider>
