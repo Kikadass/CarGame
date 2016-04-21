@@ -27,5 +27,15 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 
+        <Button
+            android:id= "@+id/onlineScores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/online_scores_button"
+            android:textSize="@dimen/menu_text"
+            android:layout_below="@+id/scores"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
     </RelativeLayout>
 </LinearLayout>

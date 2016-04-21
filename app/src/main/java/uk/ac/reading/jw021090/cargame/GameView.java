@@ -47,10 +47,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Menu menu;
 	//Handle communication from the GameThread to the View/Activity Thread
     private Handler mHandler;
+	private Context context;
 
 
 	public GameView(Context context, AttributeSet attrs) {
 		super(context);
+
+		this.context = context;
 
 		//Get the holder of the screen and register interest
 		SurfaceHolder holder = getHolder();
@@ -201,8 +204,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void saveScore(int highScore){
-		WritingScore write = new WritingScore("http://www.kidscoding.tk/Scores.txt", new File(GameActivity.files, "output.txt"));
-		List<ScoreModel> scores = write.read();
+		String url = "http://www.kidscoding.tk/Scores.txt";
+		File file = new File(context.getFilesDir(), "Scores.txt");
+
+        ReadScore reader = new ReadScore(url, file);
+        reader.execute(false);
+        List<ScoreModel> scores = null;
+
+        // make sure that the reading has finished before continuing
+        while (reader.getScoreModelList().size() == 0) {
+            scores = reader.getScoreModelList();
+        }
+
 		boolean added = false;
 		for (int i = 0; i < scores.size(); i++) {
 			if (highScore >= scores.get(i).getScore()) {
@@ -210,7 +223,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					scores.add(scores.get(scores.size()-1));
 				}
 				for (int j = scores.size()-1; j > i; j--){
-					scores.get(j).setModel(scores.get(j--));
+					scores.get(j).setModel(scores.get(j - 1));
 				}
 				scores.get(i).setModel(new ScoreModel(highScore));
 				added = true;
@@ -221,7 +234,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			scores.add(new ScoreModel(highScore));
 		}
 
-		write.execute(scores);
+		new WritingScore(url, file).execute(scores);
     }
 
     public void pause(){

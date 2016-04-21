@@ -1,17 +1,16 @@
 package uk.ac.reading.jw021090.cargame;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ViewFlipper;
-
-import java.io.File;
-
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     /** Called when the activity is first created. */
@@ -24,7 +23,6 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
-
 
         final Intent intent1 = new Intent(this, GameActivity.class);
         final Button play = (Button) findViewById(R.id.play);
@@ -41,12 +39,42 @@ public class MainActivity extends Activity {
         scores.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
+                intent2.putExtra("isOnline","false");
                 startActivity(intent2);
                 finish();
+            }
+        });
+
+        final Button onlineScores = (Button) findViewById(R.id.onlineScores);
+        onlineScores.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                if (isConnected()) {
+                    intent2.putExtra("isOnline","true");
+                    startActivity(intent2);
+                    finish();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "There is not internet connection!", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
 
+
+
+    }
+
+    private boolean isConnected(){
+        ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        if (i == null)
+            return false;
+        if (!i.isConnected())
+            return false;
+        if (!i.isAvailable())
+            return false;
+        return true;
     }
 
 }
