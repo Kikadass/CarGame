@@ -1,5 +1,6 @@
 package uk.ac.reading.jw021090.cargame;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,6 +12,7 @@ import android.graphics.Rect;
 public class Bullet extends Object {
     private int x;
     private int y;
+
 
     private Rect rect;
 
@@ -26,6 +28,7 @@ public class Bullet extends Object {
     private int height;
 
     public Bullet() {
+
 
         height = 5;
         visible = false;

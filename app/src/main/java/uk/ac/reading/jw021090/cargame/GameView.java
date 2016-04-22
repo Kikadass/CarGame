@@ -132,7 +132,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
             gameState = 0;
             player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 32, 57);
-            controls = new Controls(BitmapFactory.decodeResource(getResources(), R.drawable.wheel_left), BitmapFactory.decodeResource(getResources(), R.drawable.wheel_right));
+            controls = new Controls(
+					BitmapFactory.decodeResource(getResources(), R.drawable.wheel_left),
+					BitmapFactory.decodeResource(getResources(), R.drawable.wheel_right),
+					BitmapFactory.decodeResource(getResources(), R.drawable.machinegun));
             menu = new Menu(BitmapFactory.decodeResource(getResources(), R.drawable.menu), BitmapFactory.decodeResource(getResources(), R.drawable.active_menu1), WIDTH - 45);
             smoke = new ArrayList<Smoke>();
             bullet = new Bullet();
@@ -338,7 +341,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 playerExplosion.draw(canvas);
 			}
 
-			controls.draw(canvas);
+			controls.draw(canvas, level.isShooting());
 
 			drawMessage(canvas);
 
