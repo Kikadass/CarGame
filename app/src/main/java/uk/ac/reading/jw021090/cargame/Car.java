@@ -16,12 +16,12 @@ import uk.ac.reading.jw021090.cargame.R;
 public class Car extends Object{
     //Will store the image of a car
     private Bitmap image;
-    private int score;
     private int speed;
+    private int maxSpeed;
     private Random rnd = new Random();
 
 
-    public Car(Bitmap res, int w, int h, int score){
+    public Car(Bitmap res, int w, int h, int score, int maxSpeed){
         int random = rnd.nextInt(4 - GameView.gameState);
         if (GameView.changingState && random != 0)random--;
         switch (random){
@@ -41,21 +41,18 @@ public class Car extends Object{
         super.yPos = -h;
         width = w;
         height = h;
-        this.score = score;
+        this.maxSpeed = maxSpeed;
 
         this.speed = 3 +(int) (rnd.nextDouble()*score/50);
 
-        // cap missile speed
+        // cap car speed
 
-        if (this.speed > 10) this.speed = 10;
+        if (this.speed > maxSpeed) this.speed = maxSpeed;
 
         this.image = res;
 
     }
 
-    public int getWidth(){
-        return width;
-    }
 
     public int getSpeed() {
         return speed;

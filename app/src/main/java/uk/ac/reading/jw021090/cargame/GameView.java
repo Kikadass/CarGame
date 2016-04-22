@@ -81,7 +81,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.setxPos(112);
 		player.resetDx();
 		player.setVisible(true);
-		bullet.setInactive();
+		bullet.setVisible(false);
 		background.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.background));
 		background.resetChanging();
 
@@ -408,14 +408,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     startGame();
                 }
             }
-            /*
-			else if(event.getY() < getHeight() - getHeight()/ 5) {
+
+			else if(event.getY() < getHeight() - getHeight()/ 5 && level.isShooting()) {
 				// Shots fired
 				if(bullet.shoot(player.getxPos()+ player.width/2,player.getyPos(),bullet.UP)){
 					//soundPool.play(shootID, 1, 1, 0, 0, 1);
 				}
 			}
-			*/
+
 			System.out.println(event.getX() + "   " + event.getY());
 
 		}
@@ -446,7 +446,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			// BACKGROUND
 			// from one point the road passes from 4 lanes into 3
-			if (player.getScore() > 10 && gameState == 0){
+			if (player.getScore() > 10 && gameState == 0 && level.getMinLanes() < 4){
 				if (!background.isChanged()) {
 					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background3));
 					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto3));
@@ -458,7 +458,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
 			// from one point the road passes from 3 lanes into 2
-			if (player.getScore() > 200 && gameState == 1){
+			if (player.getScore() > 200 && gameState == 1 && level.getMinLanes() < 3){
 				if (!background.isChanged()) {
 					background.setNextImage(BitmapFactory.decodeResource(getResources(), R.drawable.background2));
 					background.setTempImage(BitmapFactory.decodeResource(getResources(), R.drawable.backgroundto2));
@@ -473,23 +473,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 			// Update the players bullet
-			if(bullet.getStatus()){
+			if(bullet.isVisible()){
 				bullet.update(GameThread.FPS);
 			}
 			// Has the player's bullet hit the top of the screen
 			if(bullet.getImpactPointY() < 0){
-				bullet.setInactive();
+				bullet.setVisible(false);
 			}
 
-			// bullets colliding:
-			/*
-			if (RectF.intersects(bullet.getRect(), invaders[i].getRect())) {
-				invaders[i].setInvisible();
-				soundPool.play(invaderExplodeID, 1, 1, 0, 0, 1);
-				bullet.setInactive();
-				score = score + 10;
-			}
-			*/
+
 
             // if player collides with wal while changing track dies
             if (background.isChanged()) {
@@ -501,17 +493,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
-			if (elapsedCars > (5000 - player.getScore()/10)){
+			if (elapsedCars > (5000/level.getMaxCars() + 1500*gameState - player.getScore()/10)){
 				int random = rnd.nextInt(3);
 				switch (random){
 					case 0:
-						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car1_down), 32, 60, player.getScore()));
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car1_down), 32, 60, player.getScore(), level.getMaxSpeed()));
 						break;
 					case 1:
-						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2_down), 34, 60, player.getScore()));
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.car2_down), 34, 60, player.getScore(), level.getMaxSpeed()));
 						break;
 					case 2:
-						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.police_car), 32, 60, player.getScore()));
+						cars.add(new Car(BitmapFactory.decodeResource(getResources(), R.drawable.police_car), 32, 60, player.getScore(), level.getMaxSpeed()));
 						break;
 					default:
 						break;
@@ -524,6 +516,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			for(int i = 0; i < cars.size();i++) {
                 //update cars
                 cars.get(i).update();
+
+				// bullets colliding:
+				if (bullet.isVisible()) {
+					if (Rect.intersects(bullet.getRect(), cars.get(i).getRectangle())) {
+						cars.remove(i);
+						//soundPool.play(invaderExplodeID, 1, 1, 0, 0, 1);
+						bullet.setVisible(false);
+						player.addToScore(10);
+					}
+				}
 
 
                 // if cars collide with player pause game and restart it
@@ -548,8 +550,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 //remove car if it is way off the screen
-                if (cars.get(i).getxPos() < -100) {
+                if (cars.get(i).getyPos() > HEIGHT) {
                     cars.remove(i);
+					if (level.isShooting()){
+						player.addToScore(-100);
+					}
                     break;
                 }
             }

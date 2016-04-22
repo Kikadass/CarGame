@@ -34,6 +34,7 @@ public class Player extends Object{
     }
 
     public int getScore(){return score;}
+    public void addToScore(int score){this.score += score;}
     public boolean isPlaying(){return playing;}
     public void setLeft(boolean b){left = b;}
     public void setRight(boolean b){right = b;}
