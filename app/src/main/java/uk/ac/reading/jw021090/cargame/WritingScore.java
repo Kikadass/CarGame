@@ -26,20 +26,30 @@ public class WritingScore extends AsyncTask<List<ScoreModel>,String, String > {
     private String URL_TO_HIT;
     private File file;
 
-    public WritingScore(String string, File file){
+    public WritingScore(String string, File file, boolean scores){
         this.URL_TO_HIT = string;
         this.file = file;
-        createFile();
+        createFile(scores);
     }
 
-    private void createFile(){
+    private void createFile(boolean scores){
             try {
                 if (!file.exists()) {
                     if (!file.createNewFile()){
                         System.out.println("File has not been created");
                     }
+                    String content;
+                    if (scores) {
+                        content = ("{\"scores\": [{\"date\":\"03:38:13 21 Apr 2016\",\"score\": 200}]}");
+                    }
+                    else{
+                        content = ("{\"levels\": [" +
+                                "{\"maxSpeed\": 10,\"maxCars\": 5,\"minLanes\": 4,\"shooting\": \"false\"}," +
+                                "{\"maxSpeed\": 10,\"maxCars\": 5,\"minLanes\": 2,\"shooting\": \"false\"}, " +
+                                "{\"maxSpeed\": 7,\"maxCars\": 5,\"minLanes\": 3,\"shooting\": \"true\"} " +
+                                "]}");
+                    }
 
-                    String content = ("{\"scores\": [{\"date\":\"03:38:13 21 Apr 2016\",\"score\": 200}]}");
                     FileOutputStream outputStream = new FileOutputStream(file);
                     Writer out = new OutputStreamWriter(outputStream);
 

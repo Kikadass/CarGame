@@ -1,7 +1,9 @@
 package uk.ac.reading.jw021090.cargame;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -24,13 +27,28 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
         final Intent intent1 = new Intent(this, GameActivity.class);
         final Button play = (Button) findViewById(R.id.play);
         play.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                startActivity(intent1);
-                finish();
+                final String[] levels = {"Level 1", "Level 2", "Level 3"};
+
+                dialogBuilder.setTitle("Level");
+                dialogBuilder.setSingleChoiceItems(levels, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        intent1.putExtra("level", Integer.toString(i));
+                        startActivity(intent1);
+                        finish();
+                    }
+                });
+
+                AlertDialog dialog = dialogBuilder.create();
+                dialog.show();
+
             }
         });
 
@@ -55,7 +73,7 @@ public class MainActivity extends Activity {
                     finish();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "There is not internet connection!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.no_connection, Toast.LENGTH_LONG).show();
                 }
 
             }

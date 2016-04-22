@@ -7,7 +7,6 @@ package uk.ac.reading.jw021090.cargame;
     import android.app.Activity;
     import android.app.ProgressDialog;
     import android.content.Context;
-    import android.os.AsyncTask;
     import android.os.Bundle;
     import android.view.LayoutInflater;
     import android.view.Menu;
@@ -17,29 +16,8 @@ package uk.ac.reading.jw021090.cargame;
     import android.widget.ArrayAdapter;
     import android.widget.ListView;
     import android.widget.TextView;
-    import android.widget.Toast;
 
-    import com.google.gson.Gson;
-
-    import org.json.JSONArray;
-    import org.json.JSONException;
-    import org.json.JSONObject;
-
-    import java.io.BufferedReader;
     import java.io.File;
-    import java.io.FileInputStream;
-    import java.io.FileNotFoundException;
-    import java.io.FileOutputStream;
-    import java.io.IOException;
-    import java.io.InputStream;
-    import java.io.InputStreamReader;
-    import java.io.OutputStream;
-    import java.io.OutputStreamWriter;
-    import java.io.Writer;
-    import java.net.HttpURLConnection;
-    import java.net.MalformedURLException;
-    import java.net.URL;
-    import java.util.ArrayList;
     import java.util.List;
 
 public class ScoreActivity extends Activity {
@@ -76,9 +54,11 @@ public class ScoreActivity extends Activity {
         ReadScore reader =  new ReadScore(URL_TO_HIT, file);
         reader.execute(isOnline);
         ScoreAdapter adapter = null;
+        int size = 0;
 
         // make sure that the reading has finished before continuing
-        while (reader.getScoreModelList().size() == 0) {
+        while (size == 0) {
+            size = reader.getScoreModelList().size();
             adapter = new ScoreAdapter(getApplicationContext(), R.layout.row, reader.getScoreModelList());
         }
         lvScores.setAdapter(adapter);
@@ -89,6 +69,7 @@ public class ScoreActivity extends Activity {
         private List<ScoreModel> scoreModelList;
         private int resource;
         private LayoutInflater inflater;
+
         public ScoreAdapter(Context context, int resource, List<ScoreModel> objects) {
             super(context, resource, objects);
             scoreModelList = objects;
@@ -114,7 +95,7 @@ public class ScoreActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.score.setText("Score: " + scoreModelList.get(position).getScore());
+            holder.score.setText(getString(R.string.score_view) + scoreModelList.get(position).getScore());
             holder.date.setText(scoreModelList.get(position).getDate());
             holder.name.setText(scoreModelList.get(position).getName());
 
@@ -152,6 +133,9 @@ public class ScoreActivity extends Activity {
     protected void onDestroy() {
         System.out.println("DESTROY");
         super.onDestroy();
+
+        lvScores  = null;
+        dialog  = null;
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

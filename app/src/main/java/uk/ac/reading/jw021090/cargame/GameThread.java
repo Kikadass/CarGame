@@ -105,10 +105,13 @@ public class GameThread extends Thread {
 	 * Game states
 	 */
 	public void pause() {
+		System.out.println("Paused");
 		this.running = false;
 	}
 
 	public void unPause() {
+		System.out.println("UNPaused");
+
 		this.running = true;
 	}
 

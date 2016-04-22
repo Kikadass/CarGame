@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -48,6 +50,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	//Handle communication from the GameThread to the View/Activity Thread
     private Handler mHandler;
 	private Context context;
+    private Level level;
 
 
 	public GameView(Context context, AttributeSet attrs) {
@@ -87,9 +90,43 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		newGame = true;
 	}
 
+    private boolean isConnected(){
+        ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        if (i == null)
+            return false;
+        if (!i.isConnected())
+            return false;
+        if (!i.isAvailable())
+            return false;
+        return true;
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         if(thread!=null) {
+            String url = "http://www.kidscoding.tk/Levels.txt";
+            File file = new File(context.getFilesDir(), "Levels.txt");
+            ReadLevels reader = new ReadLevels(url, file);
+            if (isConnected()){
+                // if file doesn't exist --> create it:
+                reader.execute(true);
+            }
+            else{
+                new WritingScore(url, file, false);
+                reader.execute(false);
+            }
+
+            List<Level> levelList = null;
+
+            // make sure that the reading has finished before continuing
+            while (reader.getLevelList().size() < 3) {
+                levelList = reader.getLevelList();
+            }
+
+            level = levelList.get(GameActivity.level);
+
+
             scaleX = getWidth()/(float)WIDTH;
             scaleY = getHeight()/(float)HEIGHT;
             background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
@@ -211,21 +248,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         reader.execute(false);
         List<ScoreModel> scores = null;
 
-        // make sure that the reading has finished before continuing
-        while (reader.getScoreModelList().size() == 0) {
-            scores = reader.getScoreModelList();
-        }
+        int size = 0;
 
-		boolean added = false;
+
+        // make sure that the reading has finished before continuing
+        while (size == 0) {
+            size = reader.getScoreModelList().size();
+            scores = reader.getScoreModelList();
+
+		}
+
+
+
+        boolean added = false;
 		for (int i = 0; i < scores.size(); i++) {
 			if (highScore >= scores.get(i).getScore()) {
 				if (scores.size() < 10){
-					scores.add(scores.get(scores.size()-1));
+					scores.add(new ScoreModel(1));
 				}
+
 				for (int j = scores.size()-1; j > i; j--){
 					scores.get(j).setModel(scores.get(j - 1));
+
 				}
+
 				scores.get(i).setModel(new ScoreModel(highScore));
+
+
+
 				added = true;
 				break;
 			}
@@ -234,7 +284,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			scores.add(new ScoreModel(highScore));
 		}
 
-		new WritingScore(url, file).execute(scores);
+		new WritingScore(url, file, true).execute(scores);
     }
 
     public void pause(){
@@ -451,7 +501,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
-			if (elapsedCars > (2000 - player.getScore()/4)){
+			if (elapsedCars > (5000 - player.getScore()/10)){
 				int random = rnd.nextInt(3);
 				switch (random){
 					case 0:

@@ -9,7 +9,9 @@
     <string name="menu_restart">RESTART</string>
     <string name="play_button">Play</string>
     <string name="scores_button">Scores</string>
+    <string name="score_view">Score: </string>
     <string name="online_scores_button">Online Scores</string>
+    <string name="no_connection">There is not internet connection!</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_detail">Detail Activity</string>
 

@@ -18,11 +18,17 @@ public class GameActivity extends Activity{
     public static boolean started = false;
     private SharedPreferences sharedPreferences;
     public static File files;
+    public static int level;
 
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        String getlevel = intent.getStringExtra("level");
+
+        level = Integer.parseInt(getlevel);
 
         files = getFilesDir();
 
