@@ -554,6 +554,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     cars.remove(i);
 					if (level.isShooting()){
 						player.addToScore(-100);
+						if (player.getScore() < 0){
+							die();
+						}
 					}
                     break;
                 }

@@ -46,7 +46,7 @@ public class WritingScore extends AsyncTask<List<ScoreModel>,String, String > {
                         content = ("{\"levels\": [" +
                                 "{\"maxSpeed\": 10,\"maxCars\": 5,\"minLanes\": 4,\"shooting\": \"false\"}," +
                                 "{\"maxSpeed\": 10,\"maxCars\": 5,\"minLanes\": 2,\"shooting\": \"false\"}, " +
-                                "{\"maxSpeed\": 7,\"maxCars\": 5,\"minLanes\": 3,\"shooting\": \"true\"} " +
+                                "{\"maxSpeed\": 14,\"maxCars\": 5,\"minLanes\": 3,\"shooting\": \"true\"} " +
                                 "]}");
                     }
 
