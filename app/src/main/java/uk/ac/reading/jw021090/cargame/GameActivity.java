@@ -33,9 +33,7 @@ public class GameActivity extends Activity{
         files = getFilesDir();
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.game_layout);
@@ -46,7 +44,6 @@ public class GameActivity extends Activity{
     }
 
     private void startGame() {
-
         //Set up a new game, we don't care about previous states
         started = true;
         gameView = new GameView(this, null);

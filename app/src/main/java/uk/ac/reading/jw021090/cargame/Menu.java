@@ -21,7 +21,6 @@ public class Menu extends Object {
         this.active_menu = active_menu;
         this.xPos = xPos;
         yPos = 0;
-        setVisible(false);
         // difference between the buttons
         height = 30;
         active_xPos =  GameView.WIDTH / 2 - 50;

@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -47,8 +46,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Explosion playerExplosion;
 	private Controls controls;
     private Menu menu;
-	//Handle communication from the GameThread to the View/Activity Thread
-    private Handler mHandler;
 	private Context context;
     private Level level;
 
@@ -64,13 +61,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		thread = new GameThread(this);
 
-
 		setFocusable(true);
 	}
+
+
+	// GETTERS AND SETTERS
 
     public GameThread getThread(){
         return thread;
     }
+
+	public int getHighScore(){
+		return highScore;
+	}
+
+	public void setHighScore(int score){
+		highScore = score;
+	}
+
+
 
 	public void startGame(){
 		gameState = 0;
@@ -109,18 +118,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             File file = new File(context.getFilesDir(), "Levels.txt");
             ReadLevels reader = new ReadLevels(url, file);
             if (isConnected()){
-                // if file doesn't exist --> create it:
                 reader.execute(true);
             }
             else{
+                // if file doesn't exist --> create it:
                 new WritingScore(url, file, false);
                 reader.execute(false);
             }
 
-            List<Level> levelList = null;
+            List<Level> levelList = reader.getLevelList();
 
             // make sure that the reading has finished before continuing
-            while (reader.getLevelList().size() < 3) {
+            while (levelList.size() < 3) {
                 levelList = reader.getLevelList();
             }
 
@@ -231,17 +240,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
-        startGame();
+        while (!paused) {
+            pause();
+        }
 
+        thread.pause();
     }
 
-    public int getHighScore(){
-        return highScore;
-    }
-
-    public void setHighScore(int score){
-        highScore = score;
-    }
 
     public void saveScore(int highScore){
 		String url = "http://www.kidscoding.tk/Scores.txt";
@@ -260,8 +265,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             scores = reader.getScoreModelList();
 
 		}
-
-
 
         boolean added = false;
 		for (int i = 0; i < scores.size(); i++) {
@@ -313,9 +316,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	public  void draw(Canvas canvas){
+
         super.draw(canvas);
 
-		if(canvas!=null) {
+        if(canvas!=null) {
 			final int saved = canvas.save();
 
             canvas.scale(scaleX, scaleY);
@@ -369,7 +373,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawText(res.getString(R.string.high_score) + ": " + highScore, WIDTH / 7, HEIGHT / 2 - 30, paint);
 		}
 
-		if(!player.isPlaying() && dead) {
+		if(!player.isPlaying() && dead || !player.isPlaying() && newGame) {
             canvas.drawText(res.getString(R.string.press_start), WIDTH / 7, HEIGHT / 2, paint);
 		}
 	}
@@ -383,9 +387,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				player.setPlaying(true);
 				dead = false;
 			}
-			//else depending on where the finger is will be left or right
 
-			//left
+            // Pause Menu
+            else if (paused){
+                boolean x = (event.getX()/scaleX > menu.getActive_xPos() && event.getX()/scaleX < menu.getActive_xPos() + 110);
+
+                // continue
+                if(event.getY()/scaleY > menu.getActive_yPos()-15 && event.getY()/scaleY < menu.getActive_yPos()+5
+                        && x) {
+                    unPause();
+                }
+                //restart
+                else if(event.getY()/scaleY > menu.getActive_yPos()+menu.height-15 && event.getY()/scaleY < menu.getActive_yPos()+menu.height+5
+                        && x) {
+                    startGame();
+                }
+            }
+
+            //moving controls
 			else if(event.getY() > getHeight() - getHeight()/ 5) {
 				if (event.getX() < getWidth() / 3) {
 					player.setLeft(true);
@@ -393,25 +412,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					player.setRight(true);
 				}
 			}
+
+            //pause button
             else if(event.getY() < getHeight()/6 && event.getX() > getWidth() - getWidth()/4) {
                 pause();
             }
 
 
-            if (paused){
-                boolean x = (event.getX()/scaleX > menu.getActive_xPos() && event.getX()/scaleX < menu.getActive_xPos() + 110);
-
-                // continue
-                if(event.getY()/scaleY > menu.getActive_yPos()-15 && event.getY()/scaleY < menu.getActive_yPos()+5
-                    && x) {
-                    unPause();
-                }
-                else if(event.getY()/scaleY > menu.getActive_yPos()+menu.height-15 && event.getY()/scaleY < menu.getActive_yPos()+menu.height+5
-                        && x) {
-                    startGame();
-                }
-            }
-
+            // shooting is the rest of the screen
 			else if(event.getY() < getHeight() - getHeight()/ 5 && level.isShooting()) {
 				// Shots fired
 				if(bullet.shoot(player.getxPos()+ player.width/2,player.getyPos(),bullet.UP)){
@@ -424,7 +432,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 
-
 		// if player stops touching the screen stop turning
 		if(event.getAction() == MotionEvent.ACTION_UP){
 			player.setLeft(false);
@@ -433,7 +440,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		return true;
-
 	}
 
 	public boolean collision(Object a, Object b){
@@ -475,6 +481,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			background.update();
 
 
+            // if player collides with wal while changing track dies
+            if (background.isChanged()) {
+                if (roadLine.collide(player)){
+                    die();
+                }
+            }
+
 			// Update the players bullet
 			if(bullet.isVisible()){
 				bullet.update(GameThread.FPS);
@@ -485,15 +498,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 
 
-
-            // if player collides with wal while changing track dies
-            if (background.isChanged()) {
-                if (roadLine.collide(player)){
-                    die();
-                }
-            }
-
-
+            // CARS
 			// create cars every 2 seconds-the score divided by 4
 			long elapsedCars = (System.nanoTime() - carsTimer)/1000000;
 			if (elapsedCars > (5000/level.getMaxCars() + 1500*gameState - player.getScore()/10)){
@@ -565,6 +570,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
+            //SMOKE
 			// add smoke on timer
 			long elapsedSmoke = (System.nanoTime() - smokeTimer)/1000000;
 			if(elapsedSmoke > 150){

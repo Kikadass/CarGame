@@ -27,8 +27,11 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
+        // PLAY BUTTON
+
+        // level pop up builder
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final Intent intent1 = new Intent(this, GameActivity.class);
         final Button play = (Button) findViewById(R.id.play);
         play.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +55,8 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        // SCORES BUTTON
         final Intent intent2 = new Intent(this, ScoreActivity.class);
         final Button scores = (Button) findViewById(R.id.scores);
         scores.setOnClickListener(new View.OnClickListener() {
@@ -63,10 +68,13 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        // ONLINE SCORES BUTTON
         final Button onlineScores = (Button) findViewById(R.id.onlineScores);
         onlineScores.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
+                // if is not connected don't go to the Scores Activity and show a message
                 if (isConnected()) {
                     intent2.putExtra("isOnline","true");
                     startActivity(intent2);
