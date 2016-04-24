@@ -10,10 +10,6 @@ import android.graphics.Rect;
  * Created by Kikadass on 15/04/2016.
  */
 public class Bullet extends Object {
-    private int x;
-    private int y;
-
-
     private Rect rect;
 
     // Which way is it shooting
@@ -28,11 +24,8 @@ public class Bullet extends Object {
     private int height;
 
     public Bullet() {
-
-
         height = 5;
         visible = false;
-
         rect = new Rect();
     }
 
@@ -42,17 +35,17 @@ public class Bullet extends Object {
 
     public int getImpactPointY(){
         if (heading == DOWN){
-            return y + height;
+            return yPos + height;
         }else{
-            return  y;
+            return  yPos;
         }
 
     }
 
     public boolean shoot(int startX, int startY, int direction) {
         if (!visible) {
-            x = startX;
-            y = startY;
+            xPos = startX;
+            yPos = startY;
             heading = direction;
             visible = true;
             return true;
@@ -73,19 +66,18 @@ public class Bullet extends Object {
     }
 
     public void update(int fps){
-
         // Just move up or down
         if(heading == UP){
-            y = y - speed / fps;
+            yPos = yPos - speed / fps;
         }else{
-            y = y + speed / fps;
+            yPos = yPos + speed / fps;
         }
 
         // Update rect
-        rect.left = x;
-        rect.right = x + width;
-        rect.top = y;
-        rect.bottom = y + height;
+        rect.left = xPos;
+        rect.right = xPos + width;
+        rect.top = yPos;
+        rect.bottom = yPos + height;
 
 
 

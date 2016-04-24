@@ -36,9 +36,7 @@ public class ReadLevels extends AsyncTask<Boolean,String, List<Level> > {
             StringBuffer buffer = null;
 
             //params[0] = isOnline
-            if (params[0]) {
-                buffer = read.onlineReading();
-            }
+            if (params[0]) buffer = read.onlineReading();
             else buffer = read.offlineReading();
 
             String finalJson = buffer.toString();
@@ -46,8 +44,7 @@ public class ReadLevels extends AsyncTask<Boolean,String, List<Level> > {
             JSONObject parentObject = new JSONObject(finalJson);
             JSONArray parentArray = parentObject.getJSONArray("levels");
 
-            levelList = new ArrayList<>();
-
+            List<Level> tmplevelList = new ArrayList<>();
 
             Gson gson = new Gson();
             for (int i = 0; i < parentArray.length(); i++) {
@@ -57,9 +54,11 @@ public class ReadLevels extends AsyncTask<Boolean,String, List<Level> > {
                  * below single line of code from Gson saves you from writing the json parsing yourself
                  */
                 Level level = gson.fromJson(finalObject.toString(), Level.class);
-                levelList.add(level);
-                System.out.println(levelList.size());
+
+                tmplevelList.add(level);
             }
+
+            levelList = tmplevelList;
 
             // safe levels localy for future games without connection
             if (params[0]) {

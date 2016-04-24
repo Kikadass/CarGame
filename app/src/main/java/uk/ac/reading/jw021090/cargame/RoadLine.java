@@ -30,7 +30,8 @@ public class RoadLine extends Object{
         // find the point of intersection of both lines only in x
         int ix = (int) ((player.yPos-yPos+xPos*((y2Pos-yPos)/(x2Pos-xPos)))/((y2Pos-yPos)/(x2Pos-xPos)));
 
-        // if that point of intersecction is in the section of the line wanted and the player is there return true.
+
+        // make sure that after the line the player is not allowed in the invisible lane
         if (ix < xPos && player.xPos > 122 && GameView.gameState == 1){
                 player.xPos = 122;
         }
@@ -39,6 +40,7 @@ public class RoadLine extends Object{
             player.xPos = 62;
         }
 
+        // if that point of intersection is in the section of the line wanted and the player is there return true.
         if (xPos < ix && ix < x2Pos){
             if (player.xPos > ix-player.width && GameView.gameState == 1) {
                 return true;
