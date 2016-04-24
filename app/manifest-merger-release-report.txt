@@ -1,53 +1,77 @@
 -- Merging decision tree log ---
 manifest
 ADDED from AndroidManifest.xml:2:1
-	xmlns:android
-		ADDED from AndroidManifest.xml:2:11
 	package
-		ADDED from AndroidManifest.xml:3:5
+		ADDED from AndroidManifest.xml:3:1
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 	android:versionName
+		ADDED from AndroidManifest.xml:5:1
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 	android:versionCode
+		ADDED from AndroidManifest.xml:4:1
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
-application
-ADDED from AndroidManifest.xml:5:5
-MERGED from com.android.support:appcompat-v7:21.0.3:16:5
-MERGED from com.android.support:support-v4:21.0.3:16:5
-	android:label
-		ADDED from AndroidManifest.xml:8:9
-	android:allowBackup
-		ADDED from AndroidManifest.xml:6:9
-	android:icon
-		ADDED from AndroidManifest.xml:7:9
-	android:theme
-		ADDED from AndroidManifest.xml:9:9
-activity#uk.ac.reading.jw021090.cargame.MainActivity
-ADDED from AndroidManifest.xml:10:9
-	android:label
-		ADDED from AndroidManifest.xml:12:13
+	xmlns:android
+		ADDED from AndroidManifest.xml:2:11
+uses-permission#android.permission.INTERNET
+ADDED from AndroidManifest.xml:7:5
 	android:name
-		ADDED from AndroidManifest.xml:11:13
-intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:13:13
-action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:14:17
+		ADDED from AndroidManifest.xml:7:22
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from AndroidManifest.xml:8:5
 	android:name
-		ADDED from AndroidManifest.xml:14:25
-category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:16:17
+		ADDED from AndroidManifest.xml:8:22
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from AndroidManifest.xml:9:5
 	android:name
-		ADDED from AndroidManifest.xml:16:27
+		ADDED from AndroidManifest.xml:9:22
 uses-sdk
-INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
-MERGED from com.android.support:appcompat-v7:21.0.3:15:5
-MERGED from com.android.support:support-v4:21.0.3:15:5
+ADDED from AndroidManifest.xml:11:5
 	android:targetSdkVersion
+		ADDED from AndroidManifest.xml:13:5
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 	android:minSdkVersion
+		ADDED from AndroidManifest.xml:12:5
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
+application
+ADDED from AndroidManifest.xml:15:1
+activity#uk.ac.reading.jw021090.cargame.MainActivity
+ADDED from AndroidManifest.xml:17:5
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:18:9
+	android:label
+		ADDED from AndroidManifest.xml:23:9
+	android:allowBackup
+		ADDED from AndroidManifest.xml:19:9
+	android:icon
+		ADDED from AndroidManifest.xml:20:9
+	android:theme
+		ADDED from AndroidManifest.xml:21:9
+	android:name
+		ADDED from AndroidManifest.xml:22:9
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:24:9
+action#android.intent.action.MAIN
+ADDED from AndroidManifest.xml:25:13
+	android:name
+		ADDED from AndroidManifest.xml:25:21
+category#android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:27:13
+	android:name
+		ADDED from AndroidManifest.xml:27:23
+activity#uk.ac.reading.jw021090.cargame.GameActivity
+ADDED from AndroidManifest.xml:31:5
+	android:label
+		ADDED from AndroidManifest.xml:33:9
+	android:name
+		ADDED from AndroidManifest.xml:32:9
+activity#uk.ac.reading.jw021090.cargame.ScoreActivity
+ADDED from AndroidManifest.xml:36:5
+	android:label
+		ADDED from AndroidManifest.xml:38:9
+	android:name
+		ADDED from AndroidManifest.xml:37:9

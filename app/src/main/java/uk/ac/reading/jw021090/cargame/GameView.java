@@ -149,6 +149,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             smoke = new ArrayList<Smoke>();
             bullet = new Bullet();
             cars = new ArrayList<Car>();
+			dead = true;
 
             smokeTimer = System.nanoTime();
             carsTimer = System.nanoTime();
@@ -373,7 +374,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawText(res.getString(R.string.high_score) + ": " + highScore, WIDTH / 7, HEIGHT / 2 - 30, paint);
 		}
 
-		if(!player.isPlaying() && dead || !player.isPlaying() && newGame) {
+		if(!player.isPlaying() && dead) {
             canvas.drawText(res.getString(R.string.press_start), WIDTH / 7, HEIGHT / 2, paint);
 		}
 	}

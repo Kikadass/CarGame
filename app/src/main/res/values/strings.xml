@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CARGAME</string>
+    <string name="app_name">BadassRide</string>
     <string name="current_score">DISTANCE</string>
     <string name="high_score">HIGH SCORE</string>
     <string name="press_start">PRESS TO START</string>
